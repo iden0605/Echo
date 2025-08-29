@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { useState, useRef, useEffect } from 'react';
 import { FiChevronDown, FiChevronUp, FiEdit, FiSend, FiX } from 'react-icons/fi';
+import { FaFileAlt } from 'react-icons/fa';
 import LoadingDots from './LoadingDots';
 import StreamedResponse from './StreamedResponse';
 
@@ -90,6 +91,22 @@ function MessageInstance({ userMessage, aiMessage, aiLoading, chatboxHeight, onE
               />
             ) : (
               <>
+                {userMessage.files && userMessage.files.length > 0 && (
+                  <div className="mb-2 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+                    {userMessage.files.map((file, index) => (
+                      <div key={index} className="bg-stone-600 p-2 rounded-lg">
+                        {file.type.startsWith('image/') ? (
+                          <img src={URL.createObjectURL(file)} alt={file.name} className="w-full h-24 object-cover rounded-md"/>
+                        ) : (
+                          <div className="flex flex-col items-center justify-center h-24">
+                            <FaFileAlt className="text-stone-400" size={32} />
+                            <p className="text-cream-50 text-xs text-center mt-2 truncate">{file.name}</p>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}

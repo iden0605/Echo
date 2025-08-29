@@ -25,6 +25,7 @@ html::-webkit-scrollbar, body::-webkit-scrollbar {
 
 .custom-scrollbar::-webkit-scrollbar {
   width: 6px;
+  height: 6px;
 }
 .custom-scrollbar::-webkit-scrollbar-track {
   background: #2a2a2a; 
@@ -33,12 +34,15 @@ html::-webkit-scrollbar, body::-webkit-scrollbar {
 .custom-scrollbar::-webkit-scrollbar-thumb {
   background: #8a8a9a; 
   border-radius: 10px;
-  mask-image: linear-gradient(to bottom, transparent, black 20%, black 80%, transparent);
 }
 .custom-scrollbar:hover::-webkit-scrollbar-thumb {
   background: #aab0b4; 
-  mask-image: linear-gradient(to bottom, transparent, black 20%, black 80%, transparent);
 }
+
+.file-preview-scrollbar::-webkit-scrollbar {
+  display: none; /* Hide the default scrollbar */
+}
+
 
 /* Loading Dots Animation */
 .dot {

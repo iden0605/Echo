@@ -3,7 +3,7 @@ import InputBox from './InputBox';
 import ChatInterface from './ChatInterface';
 import { generateResponseStream } from "../../../utilities/gemini";
 
-function Chat() {
+function Chat({ isDragging, setIsDragging }) {
   const chatContentRef = useRef(null);
   const chatboxContainerRef = useRef(null);
   const [messages, setMessages] = useState([]);
@@ -32,8 +32,8 @@ function Chat() {
   }, [messages.length]);
 
   // Handle user input and AI response in streams
-  const handleUserMessage = async (userMessageText) => {
-    const userMessage = { text: userMessageText, sender: "user", id: Date.now() + "-user" };
+  const handleUserMessage = async (userMessageText, files = []) => {
+    const userMessage = { text: userMessageText, sender: "user", files: files, id: Date.now() + "-user" };
     const newMessages = [...messages, userMessage];
     const emptyAiMessage = { text: "", sender: "ai", id: Date.now() + "-ai" };
 
@@ -41,7 +41,7 @@ function Chat() {
     setAiLoading(true);
 
     let streamedResponse = "";
-    await generateResponseStream(newMessages, userMessageText, (chunk) => {
+    await generateResponseStream(newMessages, userMessageText, files, (chunk) => {
       streamedResponse += chunk;
       setMessages((prevMessages) => {
         const updatedMessages = [...prevMessages];
@@ -59,11 +59,13 @@ function Chat() {
   const handleEditMessage = async (userMessageId, newText) => {
     let messageHistoryForEdit = [];
     let userMessageIndex = -1;
+    let files = [];
   
     setMessages(prevMessages => {
       const updatedMessages = prevMessages.map((msg, index) => {
         if (msg.id === userMessageId) {
           userMessageIndex = index;
+          files = msg.files || [];
           return { ...msg, text: newText, edited: true };
         }
         return msg;
@@ -83,7 +85,7 @@ function Chat() {
       setAiLoading(true);
   
       let streamedResponse = "";
-      await generateResponseStream(messageHistoryForEdit, newText, (chunk) => {
+      await generateResponseStream(messageHistoryForEdit, newText, files, (chunk) => {
         streamedResponse += chunk;
         setMessages(prevMessages => {
           const updatedMessages = [...prevMessages];
@@ -106,7 +108,7 @@ function Chat() {
         <div ref={messagesEndRef} />
       </div>
       <div ref={chatboxContainerRef} className="flex justify-center px-4 pb-2 md:pb-4 z-20">
-        <InputBox onSendMessage={handleUserMessage} aiLoading={aiLoading}/>
+        <InputBox onSendMessage={handleUserMessage} aiLoading={aiLoading} isDragging={isDragging} setIsDragging={setIsDragging} />
       </div>
     </div>
   );
