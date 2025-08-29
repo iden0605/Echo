@@ -172,7 +172,7 @@ function InputBox({ onSendMessage, aiLoading, isDragging, setIsDragging }) {
           >
             <div className="flex space-x-4">
               {selectedFiles.map((file, index) => (
-                <div key={index} className="flex-shrink-0 bg-stone-800 rounded-lg w-40 h-24 relative overflow-hidden group">
+                <div key={index} className="flex-shrink-0 bg-stone-800 rounded-lg w-40 h-24 relative overflow-hidden group border border-stone-500">
                   <button 
                     onClick={() => handleRemoveFile(file)} 
                     className="absolute top-1 right-1 bg-black/50 rounded-full p-0.5 hover:bg-black/75 z-10 invisible group-hover:visible transition-opacity duration-300"

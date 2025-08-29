@@ -1,9 +1,9 @@
 import { useRef, useState, useEffect } from 'react';
 import InputBox from './InputBox';
 import ChatInterface from './ChatInterface';
-import { generateResponseStream } from "../../../utilities/gemini";
+import { generateText } from "../../../utilities/api";
 
-function Chat({ isDragging, setIsDragging, isSplitVisible, setIsSplitVisible }) {
+function Chat({ isDragging, setIsDragging, isSplitVisible, setIsSplitVisible, setSplitScreenData }) {
   const chatContentRef = useRef(null);
   const chatboxContainerRef = useRef(null);
   const [messages, setMessages] = useState([]);
@@ -12,7 +12,6 @@ function Chat({ isDragging, setIsDragging, isSplitVisible, setIsSplitVisible }) 
   const [isScrolling, setIsScrolling] = useState(false);
   const scrollTimeoutRef = useRef(null);
   const messagesEndRef = useRef(null);
-  const lastMessageText = messages.length > 0 ? messages[messages.length - 1].text : '';
 
   // State for custom scrollbar
   const [thumbHeight, setThumbHeight] = useState(0);
@@ -96,7 +95,7 @@ function Chat({ isDragging, setIsDragging, isSplitVisible, setIsSplitVisible }) 
     };
   }, [messages]);
 
-  // Handle user input and AI response in streams
+  // Handle user input and AI response
   const handleUserMessage = async (userMessageText, files = []) => {
     const userMessage = { text: userMessageText, sender: "user", files: files, id: Date.now() + "-user" };
     const newMessages = [...messages, userMessage];
@@ -104,20 +103,28 @@ function Chat({ isDragging, setIsDragging, isSplitVisible, setIsSplitVisible }) 
 
     setMessages((prevMessages) => [...prevMessages, userMessage, emptyAiMessage]);
     setAiLoading(true);
-    setIsSplitVisible(true);
 
-    let streamedResponse = "";
-    await generateResponseStream(newMessages, userMessageText, files, (chunk) => {
-      streamedResponse += chunk;
-      setMessages((prevMessages) => {
-        const updatedMessages = [...prevMessages];
-        const aiMessageIndex = updatedMessages.findIndex(msg => msg.id === emptyAiMessage.id);
-        if (aiMessageIndex !== -1) {
-          updatedMessages[aiMessageIndex] = { ...updatedMessages[aiMessageIndex], text: streamedResponse };
-        }
-        return updatedMessages;
-      });
+    const history = newMessages.map(msg => `${msg.sender}: ${msg.text}`).join('\n');
+    const result = await generateText(userMessageText, history, files);
+
+    const { response, type, content, desc } = result;
+
+    setMessages((prevMessages) => {
+      const updatedMessages = [...prevMessages];
+      const aiMessageIndex = updatedMessages.findIndex(msg => msg.id === emptyAiMessage.id);
+      if (aiMessageIndex !== -1) {
+        updatedMessages[aiMessageIndex] = { ...updatedMessages[aiMessageIndex], text: response };
+      }
+      return updatedMessages;
     });
+
+    if (type) {
+      setSplitScreenData({ type, content, desc });
+      setIsSplitVisible(true);
+    } else {
+      setSplitScreenData({ type: null, content: null, desc: null });
+      setIsSplitVisible(false);
+    }
 
     setAiLoading(false);
   };
@@ -125,13 +132,11 @@ function Chat({ isDragging, setIsDragging, isSplitVisible, setIsSplitVisible }) 
   const handleEditMessage = async (userMessageId, newText) => {
     let messageHistoryForEdit = [];
     let userMessageIndex = -1;
-    let files = [];
   
     setMessages(prevMessages => {
       const updatedMessages = prevMessages.map((msg, index) => {
         if (msg.id === userMessageId) {
           userMessageIndex = index;
-          files = msg.files || [];
           return { ...msg, text: newText, edited: true };
         }
         return msg;
@@ -150,19 +155,28 @@ function Chat({ isDragging, setIsDragging, isSplitVisible, setIsSplitVisible }) 
       setMessages(prev => [...prev, emptyAiMessage]);
       setAiLoading(true);
   
-      let streamedResponse = "";
-      await generateResponseStream(messageHistoryForEdit, newText, files, (chunk) => {
-        streamedResponse += chunk;
-        setMessages(prevMessages => {
-          const updatedMessages = [...prevMessages];
-          const aiMessageIndex = updatedMessages.findIndex(msg => msg.id === emptyAiMessage.id);
-          if (aiMessageIndex !== -1) {
-            updatedMessages[aiMessageIndex] = { ...updatedMessages[aiMessageIndex], text: streamedResponse };
-          }
-          return updatedMessages;
-        });
+      const history = messageHistoryForEdit.map(msg => `${msg.sender}: ${msg.text}`).join('\n');
+      const result = await generateText(newText, history);
+
+      const { response, type, content, desc } = result;
+
+      setMessages((prevMessages) => {
+        const updatedMessages = [...prevMessages];
+        const aiMessageIndex = updatedMessages.findIndex(msg => msg.id === emptyAiMessage.id);
+        if (aiMessageIndex !== -1) {
+          updatedMessages[aiMessageIndex] = { ...updatedMessages[aiMessageIndex], text: response };
+        }
+        return updatedMessages;
       });
-  
+
+      if (type) {
+        setSplitScreenData({ type, content, desc });
+        setIsSplitVisible(true);
+      } else {
+        setSplitScreenData({ type: null, content: null, desc: null });
+        setIsSplitVisible(false);
+      }
+
       setAiLoading(false);
     }
   };

@@ -54,3 +54,67 @@ html::-webkit-scrollbar, body::-webkit-scrollbar {
     transform: translateY(-10px);
   }
 }
+
+/* Webkit scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #2a2a2a;
+}
+::-webkit-scrollbar-thumb {
+  background: #555;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #777;
+}
+
+/* Flashcard 3D styles */
+.transform-style-3d {
+  transform-style: preserve-3d;
+}
+.perspective {
+  perspective: 1000px;
+}
+.rotate-y-180 {
+  transform: rotateY(180deg);
+}
+.backface-hidden {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* Prose styles for Notes component */
+.prose {
+  color: #f5f5dc;
+}
+.prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 {
+  color: #fff;
+}
+.prose a {
+  color: #90cdf4;
+}
+.prose strong {
+  color: #fff;
+}
+.prose blockquote {
+  color: #a0aec0;
+  border-left-color: #4a5568;
+}
+.prose code {
+  color: #f5f5dc;
+  background-color: #2d3748;
+  padding: 0.2em 0.4em;
+  border-radius: 0.3em;
+}
+.prose pre {
+  background-color: #1a202c;
+  color: #f5f5dc;
+}
+.prose ul > li::before {
+  background-color: #f5f5dc;
+}
+.prose ol > li::before {
+  color: #f5f5dc;
+}

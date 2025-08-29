@@ -4,12 +4,14 @@ import Split from 'react-split';
 import { FiX } from 'react-icons/fi';
 import Chat from './components/mainpage/chat/Chat';
 import Header from './components/mainpage/Header';
+import RightSplit from './components/mainpage/right_split/RightSplit';
 import './components/mainpage/chat/split.css';
 
 function App() {
   const [isDragging, setIsDragging] = useState(false);
   const [isGutterDragging, setIsGutterDragging] = useState(false);
   const [isSplitVisible, setIsSplitVisible] = useState(false);
+  const [splitScreenData, setSplitScreenData] = useState({ type: null, content: null });
   const dragCounter = useRef(0);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 
@@ -63,7 +65,7 @@ function App() {
         <>
           <div className="flex-1 flex flex-col overflow-y-auto">
             <Header />
-            <Chat isDragging={isDragging} setIsDragging={setIsDragging} isSplitVisible={isSplitVisible} setIsSplitVisible={setIsSplitVisible} />
+            <Chat isDragging={isDragging} setIsDragging={setIsDragging} isSplitVisible={isSplitVisible} setIsSplitVisible={setIsSplitVisible} setSplitScreenData={setSplitScreenData} />
           </div>
           <AnimatePresence>
             {isSplitVisible && (
@@ -72,7 +74,7 @@ function App() {
                 animate={{ y: 0 }}
                 exit={{ y: '100%' }}
                 transition={{ duration: 0.3, ease: 'easeOut' }}
-                className="fixed bottom-0 left-0 right-0 h-[90vh] bg-neutral-800 p-4 shadow-lg z-50"
+                className="fixed bottom-0 left-0 right-0 h-[90vh] bg-stone-900 p-4 shadow-lg z-50 overflow-y-auto"
               >
                 <button
                   onClick={() => setIsSplitVisible(false)}
@@ -80,7 +82,7 @@ function App() {
                 >
                   <FiX size={24} />
                 </button>
-                <h2 className="text-white">Education Content</h2>
+                <RightSplit data={splitScreenData} />
               </motion.div>
             )}
           </AnimatePresence>
@@ -89,7 +91,7 @@ function App() {
         <Split
           className={`flex flex-grow ${!isSplitVisible ? 'split-collapsed' : ''} ${isGutterDragging ? 'gutter-dragging' : ''}`}
           sizes={isSplitVisible ? [50, 50] : [100, 0]}
-          minSize={[400, 250]}
+          minSize={[400, 500]}
           expandToMin={false}
           gutterSize={isSplitVisible ? 21 : 0}
           gutterAlign="center"
@@ -102,10 +104,10 @@ function App() {
         >
           <div className="flex-1 flex flex-col overflow-y-auto">
             <Header />
-            <Chat isDragging={isDragging} setIsDragging={setIsDragging} isSplitVisible={isSplitVisible} setIsSplitVisible={setIsSplitVisible} />
+            <Chat isDragging={isDragging} setIsDragging={setIsDragging} isSplitVisible={isSplitVisible} setIsSplitVisible={setIsSplitVisible} setSplitScreenData={setSplitScreenData} />
           </div>
           <div
-            className={`split-panel relative bg-neutral-800 p-4 ${!isSplitVisible ? 'hidden' : ''}`}
+            className={`split-panel relative bg-stone-900 ${!isSplitVisible ? 'hidden' : ''}`}
             style={{ overflow: 'hidden' }}
           >
             <button
@@ -114,7 +116,9 @@ function App() {
             >
               <FiX size={24} />
             </button>
-            <h2 className="text-white">Education Content</h2>
+            <div className="h-full overflow-y-auto">
+              <RightSplit data={splitScreenData} />
+            </div>
           </div>
         </Split>
       )}
