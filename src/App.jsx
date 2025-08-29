@@ -1,10 +1,25 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import Split from 'react-split';
+import { FiX } from 'react-icons/fi';
 import Chat from './components/mainpage/chat/Chat';
 import Header from './components/mainpage/Header';
+import './components/mainpage/chat/split.css';
 
 function App() {
   const [isDragging, setIsDragging] = useState(false);
+  const [isGutterDragging, setIsGutterDragging] = useState(false);
+  const [isSplitVisible, setIsSplitVisible] = useState(false);
   const dragCounter = useRef(0);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const handleDragEnter = (e) => {
     e.preventDefault();
@@ -37,17 +52,72 @@ function App() {
   };
 
   return (
-    <div 
+    <div
       className="flex h-screen overflow-hidden"
       onDragEnter={handleDragEnter}
       onDragLeave={handleDragLeave}
       onDragOver={handleDragOver}
       onDrop={handleDrop}
     >
-      <div className="flex-1 flex flex-col overflow-y-auto">
-        <Header />
-        <Chat isDragging={isDragging} setIsDragging={setIsDragging} />
-      </div>
+      {isMobile ? (
+        <>
+          <div className="flex-1 flex flex-col overflow-y-auto">
+            <Header />
+            <Chat isDragging={isDragging} setIsDragging={setIsDragging} isSplitVisible={isSplitVisible} setIsSplitVisible={setIsSplitVisible} />
+          </div>
+          <AnimatePresence>
+            {isSplitVisible && (
+              <motion.div
+                initial={{ y: '100%' }}
+                animate={{ y: 0 }}
+                exit={{ y: '100%' }}
+                transition={{ duration: 0.3, ease: 'easeOut' }}
+                className="fixed bottom-0 left-0 right-0 h-[90vh] bg-neutral-800 p-4 shadow-lg z-50"
+              >
+                <button
+                  onClick={() => setIsSplitVisible(false)}
+                  className="absolute top-2 right-2 p-2 text-stone-400 hover:text-stone-200 z-30"
+                >
+                  <FiX size={24} />
+                </button>
+                <h2 className="text-white">Education Content</h2>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </>
+      ) : (
+        <Split
+          className={`flex flex-grow ${!isSplitVisible ? 'split-collapsed' : ''} ${isGutterDragging ? 'gutter-dragging' : ''}`}
+          sizes={isSplitVisible ? [50, 50] : [100, 0]}
+          minSize={[400, 250]}
+          expandToMin={false}
+          gutterSize={isSplitVisible ? 21 : 0}
+          gutterAlign="center"
+          snapOffset={30}
+          dragInterval={1}
+          direction="horizontal"
+          cursor="col-resize"
+          onDragStart={() => setIsGutterDragging(true)}
+          onDragEnd={() => setIsGutterDragging(false)}
+        >
+          <div className="flex-1 flex flex-col overflow-y-auto">
+            <Header />
+            <Chat isDragging={isDragging} setIsDragging={setIsDragging} isSplitVisible={isSplitVisible} setIsSplitVisible={setIsSplitVisible} />
+          </div>
+          <div
+            className={`split-panel relative bg-neutral-800 p-4 ${!isSplitVisible ? 'hidden' : ''}`}
+            style={{ overflow: 'hidden' }}
+          >
+            <button
+              onClick={() => setIsSplitVisible(!isSplitVisible)}
+              className="absolute top-2 right-2 p-2 text-stone-400 hover:text-stone-200 z-30"
+            >
+              <FiX size={24} />
+            </button>
+            <h2 className="text-white">Education Content</h2>
+          </div>
+        </Split>
+      )}
     </div>
   )
 }

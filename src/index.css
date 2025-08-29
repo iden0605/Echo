@@ -23,21 +23,6 @@ html::-webkit-scrollbar, body::-webkit-scrollbar {
   display: none;
 }
 
-.custom-scrollbar::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-.custom-scrollbar::-webkit-scrollbar-track {
-  background: #2a2a2a; 
-  border-radius: 10px;
-}
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background: #8a8a9a; 
-  border-radius: 10px;
-}
-.custom-scrollbar:hover::-webkit-scrollbar-thumb {
-  background: #aab0b4; 
-}
 
 .file-preview-scrollbar::-webkit-scrollbar {
   display: none; /* Hide the default scrollbar */

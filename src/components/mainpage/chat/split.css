@@ -1,0 +1,62 @@
+.gutter {
+  background-color: transparent;
+  position: relative;
+  z-index: 10;
+}
+
+.gutter.gutter-horizontal {
+  cursor: col-resize;
+  margin-left: -10px;
+  margin-right: -10px;
+}
+
+/* This pseudo-element is the visible 1px bar */
+.gutter.gutter-horizontal::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  transform: translateX(-50%);
+  width: 1px;
+  background-color: #4a4a4a;
+  transition: background-color 0.3s ease;
+  z-index: 1;
+}
+
+/* This is the handle */
+.gutter.gutter-horizontal::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 6px;
+  height: 20px;
+  background-color: #6e6e6e;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+  z-index: 2;
+}
+
+.split-collapsed .gutter {
+  display: none;
+}
+
+/* Hover effects on the transparent gutter change the visible pseudo-elements */
+.gutter.gutter-horizontal:hover::after {
+  background-color: #0056b3;
+}
+
+.gutter.gutter-horizontal:hover::before {
+  background-color: #007bff;
+}
+
+/* Dragging effects */
+.gutter-dragging .gutter.gutter-horizontal::after {
+  background-color: #3395ff;
+}
+
+.gutter-dragging .gutter.gutter-horizontal::before {
+  background-color: #cce5ff;
+}

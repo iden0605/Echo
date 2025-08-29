@@ -1,11 +1,11 @@
 import { motion } from 'framer-motion';
 import { useState, useRef, useEffect } from 'react';
-import { FiChevronDown, FiChevronUp, FiEdit, FiSend, FiX } from 'react-icons/fi';
+import { FiChevronDown, FiChevronUp, FiEdit, FiSend, FiX, FiColumns } from 'react-icons/fi';
 import { FaFileAlt } from 'react-icons/fa';
 import LoadingDots from './LoadingDots';
 import StreamedResponse from './StreamedResponse';
 
-function MessageInstance({ userMessage, aiMessage, aiLoading, chatboxHeight, onEditMessage }) {
+function MessageInstance({ userMessage, aiMessage, aiLoading, chatboxHeight, onEditMessage, isSplitVisible, setIsSplitVisible }) {
   const [isExpanded, setIsExpanded] = useState(false);
   const userTextRef = useRef(null);
   const [showReadMore, setShowReadMore] = useState(false);
@@ -154,12 +154,22 @@ function MessageInstance({ userMessage, aiMessage, aiLoading, chatboxHeight, onE
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: 'easeOut' }}
-        className="relative px-4 py-3 rounded-3xl bg-black/20 text-cream-50 self-start text-left backdrop-blur-lg break-words"
+        className="flex items-start space-x-2"
       >
-        {aiLoading && aiMessage.text === "" ? (
-          <LoadingDots />
-        ) : (
-          <StreamedResponse text={aiMessage.text} />
+        <div className="relative px-4 py-3 rounded-3xl bg-black/20 text-cream-50 self-start text-left backdrop-blur-lg break-words">
+          {aiLoading && aiMessage.text === "" ? (
+            <LoadingDots />
+          ) : (
+            <StreamedResponse text={aiMessage.text} />
+          )}
+        </div>
+        {!aiLoading && (
+          <button
+            onClick={() => setIsSplitVisible(!isSplitVisible)}
+            className="p-2 text-stone-400 hover:text-stone-200"
+          >
+            <FiColumns size={17} />
+          </button>
         )}
       </motion.div>
     </div>

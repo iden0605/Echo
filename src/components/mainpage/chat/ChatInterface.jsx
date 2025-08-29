@@ -1,7 +1,7 @@
 import MessageInstance from "./MessageInstance.jsx";
 import LoadingDots from "./LoadingDots.jsx";
 
-function ChatInterface({ messages, aiLoading, chatboxHeight, onEditMessage }) {
+function ChatInterface({ messages, aiLoading, chatboxHeight, onEditMessage, isSplitVisible, setIsSplitVisible }) {
   const messagePairs = [];
   for (let i = 0; i < messages.length; i += 2) {
     const userMessage = messages[i];
@@ -19,6 +19,8 @@ function ChatInterface({ messages, aiLoading, chatboxHeight, onEditMessage }) {
           aiLoading={aiLoading && index === messagePairs.length - 1 && pair.aiMessage.text === ""}
           chatboxHeight={chatboxHeight}
           onEditMessage={onEditMessage}
+          isSplitVisible={isSplitVisible}
+          setIsSplitVisible={setIsSplitVisible}
         />
       ))}
       {aiLoading && messages.length % 2 !== 0 && (

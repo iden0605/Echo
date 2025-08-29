@@ -207,7 +207,7 @@ function InputBox({ onSendMessage, aiLoading, isDragging, setIsDragging }) {
           </div>
         </div>
       )}
-      <div className={`flex flex-row items-center w-full h-auto bg-stone-700 p-2 z-10 md:flex-col md:p-4 md:min-h-20 ${selectedFiles.length > 0 ? 'rounded-b-4xl' : 'rounded-4xl'}`}>
+      <div className={`flex flex-row items-end w-full h-auto bg-stone-700 p-2 z-10 md:flex-col md:p-4 md:min-h-20 ${selectedFiles.length > 0 ? 'rounded-b-4xl' : 'rounded-4xl'}`}>
         <input
           type="file"
           ref={fileInputRef}
@@ -226,7 +226,7 @@ function InputBox({ onSendMessage, aiLoading, isDragging, setIsDragging }) {
       <textarea
         ref={textareaRef}
         placeholder="Ask Echo"
-        className="w-full flex-grow bg-transparent select-none outline-none text-base leading-tight text-cream-50 pr-3 pl-4 pt-2 pb-2 overflow-y-auto resize-none custom-scrollbar"
+        className="w-full flex-grow bg-transparent select-none outline-none text-base leading-normal text-cream-50 pr-3 pl-4 py-2 overflow-y-auto resize-none custom-scrollbar"
         value={currInput}
         onChange={(e) => {
           if (isRecording) {
