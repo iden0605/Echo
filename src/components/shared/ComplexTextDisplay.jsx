@@ -4,7 +4,7 @@ import remarkGfm from 'remark-gfm';
 import 'katex/dist/katex.min.css';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { dark } from 'react-syntax-highlighter/dist/esm/styles/prism';
-import Latex from 'react-latex-next';
+import { InlineMath } from 'react-katex';
 
 const ComplexTextDisplay = ({ text }) => {
   const components = {
@@ -30,7 +30,7 @@ const ComplexTextDisplay = ({ text }) => {
         if (typeof child === 'string') {
           const parts = child.split(/(\$.*?\$)/g);
           return parts.map((part, i) => 
-            part.startsWith('$') && part.endsWith('$') ? <Latex key={`${index}-${i}`}>{part}</Latex> : part
+            part.startsWith('$') && part.endsWith('$') ? <InlineMath key={`${index}-${i}`} math={part.slice(1, -1)} /> : part
           );
         }
         return child;
