@@ -113,7 +113,7 @@ function Chat({ isDragging, setIsDragging, isSplitVisible, setIsSplitVisible, se
       const updatedMessages = [...prevMessages];
       const aiMessageIndex = updatedMessages.findIndex(msg => msg.id === emptyAiMessage.id);
       if (aiMessageIndex !== -1) {
-        updatedMessages[aiMessageIndex] = { ...updatedMessages[aiMessageIndex], text: response };
+        updatedMessages[aiMessageIndex] = { ...updatedMessages[aiMessageIndex], text: response, type: type };
       }
       return updatedMessages;
     });
@@ -164,7 +164,7 @@ function Chat({ isDragging, setIsDragging, isSplitVisible, setIsSplitVisible, se
         const updatedMessages = [...prevMessages];
         const aiMessageIndex = updatedMessages.findIndex(msg => msg.id === emptyAiMessage.id);
         if (aiMessageIndex !== -1) {
-          updatedMessages[aiMessageIndex] = { ...updatedMessages[aiMessageIndex], text: response };
+          updatedMessages[aiMessageIndex] = { ...updatedMessages[aiMessageIndex], text: response, type: type };
         }
         return updatedMessages;
       });

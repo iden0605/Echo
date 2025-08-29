@@ -163,7 +163,7 @@ function MessageInstance({ userMessage, aiMessage, aiLoading, chatboxHeight, onE
             <StreamedResponse text={aiMessage.text} />
           )}
         </div>
-        {!aiLoading && (
+        {!aiLoading && aiMessage.type && (
           <button
             onClick={() => setIsSplitVisible(!isSplitVisible)}
             className="p-2 text-stone-400 hover:text-stone-200"

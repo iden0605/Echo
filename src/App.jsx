@@ -1,6 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import Split from 'react-split';
+import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-motion';
 import { FiX } from 'react-icons/fi';
 import Chat from './components/mainpage/chat/Chat';
 import Header from './components/mainpage/Header';
@@ -9,11 +8,49 @@ import './components/mainpage/chat/split.css';
 
 function App() {
   const [isDragging, setIsDragging] = useState(false);
-  const [isGutterDragging, setIsGutterDragging] = useState(false);
   const [isSplitVisible, setIsSplitVisible] = useState(false);
   const [splitScreenData, setSplitScreenData] = useState({ type: null, content: null });
   const dragCounter = useRef(0);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const containerRef = useRef(null);
+  const [dragConstraints, setDragConstraints] = useState({ left: 0, right: 0 });
+  const [initialWidths, setInitialWidths] = useState({ left: '50%', right: '50%' });
+
+  const x = useMotionValue(0);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (containerRef.current) {
+        const containerWidth = containerRef.current.offsetWidth;
+        const minLeftWidth = 1200;
+        const minRightWidth = 200;
+
+        let targetLeftWidth = minLeftWidth;
+        if (targetLeftWidth > containerWidth - minRightWidth) {
+          targetLeftWidth = containerWidth - minRightWidth;
+        }
+        const targetRightWidth = containerWidth - targetLeftWidth;
+
+        setInitialWidths({
+          left: targetLeftWidth,
+          right: targetRightWidth,
+        });
+
+        x.set(targetLeftWidth);
+
+        setDragConstraints({
+          left: minLeftWidth,
+          right: containerWidth - minRightWidth,
+        });
+      }
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [x]);
+
+  const leftWidth = useTransform(x, val => `${val}px`);
+  const rightWidth = useTransform(x, val => `calc(100% - ${val}px)`);
 
   useEffect(() => {
     const handleResize = () => {
@@ -60,6 +97,7 @@ function App() {
       onDragLeave={handleDragLeave}
       onDragOver={handleDragOver}
       onDrop={handleDrop}
+      ref={containerRef}
     >
       {isMobile ? (
         <>
@@ -88,42 +126,50 @@ function App() {
           </AnimatePresence>
         </>
       ) : (
-        <Split
-          className={`flex flex-grow ${!isSplitVisible ? 'split-collapsed' : ''} ${isGutterDragging ? 'gutter-dragging' : ''}`}
-          sizes={isSplitVisible ? [50, 50] : [100, 0]}
-          minSize={[400, 500]}
-          expandToMin={false}
-          gutterSize={isSplitVisible ? 21 : 0}
-          gutterAlign="center"
-          snapOffset={30}
-          dragInterval={1}
-          direction="horizontal"
-          cursor="col-resize"
-          onDragStart={() => setIsGutterDragging(true)}
-          onDragEnd={() => setIsGutterDragging(false)}
-        >
-          <div className="flex-1 flex flex-col overflow-y-auto">
+        <div className="flex flex-grow" ref={containerRef}>
+          <motion.div
+            className="flex-1 flex flex-col overflow-y-auto"
+            style={{ width: isSplitVisible ? leftWidth : '100%' }}
+          >
             <Header />
             <Chat isDragging={isDragging} setIsDragging={setIsDragging} isSplitVisible={isSplitVisible} setIsSplitVisible={setIsSplitVisible} setSplitScreenData={setSplitScreenData} />
-          </div>
-          <div
-            className={`split-panel relative bg-stone-900 ${!isSplitVisible ? 'hidden' : ''}`}
-            style={{ overflow: 'hidden' }}
-          >
-            <button
-              onClick={() => setIsSplitVisible(!isSplitVisible)}
-              className="absolute top-2 right-2 p-2 text-stone-400 hover:text-stone-200 z-30"
-            >
-              <FiX size={24} />
-            </button>
-            <div className="h-full overflow-y-auto">
-              <RightSplit data={splitScreenData} />
-            </div>
-          </div>
-        </Split>
+          </motion.div>
+          <AnimatePresence>
+            {isSplitVisible && (
+              <>
+                <motion.div
+                  className="gutter gutter-horizontal"
+                  drag="x"
+                  dragConstraints={dragConstraints}
+                  dragMomentum={false}
+                  dragElastic={0}
+                  style={{ x }}
+                  onMouseDown={() => document.body.classList.add('gutter-dragging')}
+                  onMouseUp={() => document.body.classList.remove('gutter-dragging')}
+                  onDragStart={() => document.body.classList.add('gutter-dragging')}
+                  onDragEnd={() => document.body.classList.remove('gutter-dragging')}
+                />
+                <motion.div
+                  className="relative bg-stone-900"
+                  style={{ width: rightWidth, overflow: 'hidden' }}
+                >
+                  <button
+                    onClick={() => setIsSplitVisible(false)}
+                    className="absolute top-2 right-2 p-2 text-stone-400 hover:text-stone-200 z-30"
+                  >
+                    <FiX size={24} />
+                  </button>
+                  <div className="h-full overflow-y-auto">
+                    <RightSplit data={splitScreenData} />
+                  </div>
+                </motion.div>
+              </>
+            )}
+          </AnimatePresence>
+        </div>
       )}
     </div>
-  )
+  );
 }
 
 export default App;

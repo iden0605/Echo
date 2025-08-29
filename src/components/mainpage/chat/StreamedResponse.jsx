@@ -1,25 +1,5 @@
-import { motion } from 'framer-motion';
-import { useState, useEffect, useRef, memo } from 'react';
-
-// React.memo prevents re-rendering if props (the character) don't change
-const AnimatedCharacter = memo(({ char }) => {
-
-  const charVariants = {
-    hidden: { opacity: 0 },
-    visible: { opacity: 1 },
-  };
-
-  return (
-    <motion.span
-      initial="hidden"
-      animate="visible"
-      variants={charVariants}
-      transition={{ duration: 0.5 }}
-    >
-      {char}
-    </motion.span>
-  );
-});
+import { useState, useEffect, useRef } from 'react';
+import ComplexTextDisplay from '../../shared/ComplexTextDisplay';
 
 const StreamedResponse = ({ text }) => {
   const charOutputSpeed = 1;
@@ -52,9 +32,7 @@ const StreamedResponse = ({ text }) => {
 
   return (
     <div className="whitespace-pre-wrap break-words">
-      {displayedText.split('').map((char, index) => (
-        <AnimatedCharacter key={index} char={char} />
-      ))}
+      <ComplexTextDisplay text={displayedText} />
     </div>
   );
 };

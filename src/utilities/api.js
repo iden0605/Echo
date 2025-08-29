@@ -313,8 +313,9 @@ export async function generateText(prompt, history, files = []) {
 
     let art = {};
 
-    const functionCall = response3.response.functionCall();
-    if (functionCall) {
+    const functionCalls = response3.response.functionCalls();
+    if (functionCalls && functionCalls.length > 0) {
+        const functionCall = functionCalls[0];
         if (functionCall.name === 'create_flashcards') {
             art = createFlashcards(functionCall.args.response, functionCall.args.content);
         } else if (functionCall.name === 'create_multiple_choice_quiz') {
@@ -324,6 +325,10 @@ export async function generateText(prompt, history, files = []) {
         } else if (functionCall.name === 'generate_notes') {
             art = generateNotes(functionCall.args.response, functionCall.args.content);
         }
+    } else {
+        // Handle cases where no function call is returned, even if expected
+        const r2 = response3.response.text();
+        return returnVal(r2, null, null);
     }
 
     return art;

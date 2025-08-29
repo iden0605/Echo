@@ -63,7 +63,7 @@ const BlanksQuiz = ({ content, desc }) => {
   const answeredQuestion = answered[currentIndex];
 
   return (
-    <div className="w-full max-w-2xl mx-auto flex flex-col items-center p-4 sm:p-6 bg-stone-800 rounded-2xl shadow-2xl relative">
+    <div className="w-full h-full max-w-2xl mx-auto flex flex-col items-center p-4 sm:p-6 bg-stone-800 rounded-2xl shadow-2xl relative">
       <div className="w-full flex justify-between items-center mb-4">
         <h2 className="text-lg sm:text-xl font-bold text-stone-300">Score: <span className="text-white">{score} / {questions.length}</span></h2>
         <p className="text-md sm:text-lg font-semibold text-stone-400">Question {currentIndex + 1} of {questions.length}</p>
