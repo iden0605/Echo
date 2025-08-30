@@ -8,13 +8,3 @@ createRoot(document.getElementById('root')).render(
     <App />
   </StrictMode>,
 )
-
-document.body.addEventListener("touchmove", function (e) {
-      e.preventDefault();
-});
-document.body.addEventListener("scroll", function (e) {
-      e.preventDefault();
-});
-document.body.addEventListener("wheel",function (e) {
-      e.preventDefault();
-}, false);
