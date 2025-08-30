@@ -101,7 +101,7 @@ function MessageInstance({ userMessage, aiMessage, aiLoading, chatboxHeight, onE
                           ) : (
                             <div className="flex flex-col items-center justify-center h-24">
                               <FaFileAlt className="text-stone-400" size={32} />
-                              <p className="text-cream-50 text-xs text-center mt-2 truncate">{file.name}</p>
+                              <p className="text-cream-50 text-xs text-center mt-2 truncate w-full">{file.name}</p>
                             </div>
                           )}
                         </div>

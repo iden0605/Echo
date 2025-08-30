@@ -239,11 +239,9 @@ function InputBox({ onSendMessage, aiLoading, isDragging, setIsDragging, onStop 
           setCurrInput(e.target.value);
         }}
         onKeyDown={(e) => {
-          if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            if (!aiLoading) {
-              handleSend();
-            }
+          if (e.key === 'Enter' && !e.shiftKey && !aiLoading) {
+            e.preventDefault()
+            handleSend();
           }
         }}
         rows={1}
