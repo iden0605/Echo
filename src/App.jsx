@@ -13,13 +13,23 @@ function App() {
   const [isSplitVisible, setIsSplitVisible] = useState(false);
   const [splitScreenData, setSplitScreenData] = useState({ type: null, content: null });
   const dragCounter = useRef(0);
+  const rightSplitRef = useRef(null);
+  const mobileRightSplitRef = useRef(null);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [minSizes, setMinSizes] = useState([600, 300]);
+
+  const [splitSizes, setSplitSizes] = useState([50, 50]);
 
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 768);
+      const screenWidth = window.innerWidth;
+      const leftMin = (screenWidth * 660) / 1920;
+      const rightMin = (screenWidth * 800) / 1920;
+      setMinSizes([leftMin, rightMin]);
     };
     window.addEventListener('resize', handleResize);
+    handleResize();
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
@@ -69,29 +79,38 @@ function App() {
           </div>
           <AnimatePresence>
             {isSplitVisible && (
-              <motion.div
-                initial={{ y: '100%' }}
-                animate={{ y: 0 }}
-                exit={{ y: '100%' }}
-                transition={{ duration: 0.3, ease: 'easeOut' }}
-                className="fixed bottom-0 left-0 right-0 h-[90vh] bg-stone-900 p-4 shadow-lg z-50 overflow-y-auto"
-              >
-                <button
+              <>
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="fixed inset-0 bg-opacity-100 z-40"
                   onClick={() => setIsSplitVisible(false)}
-                  className="absolute top-2 right-2 p-2 text-stone-400 hover:text-stone-200 z-30"
+                />
+                <motion.div
+                  ref={mobileRightSplitRef}
+                  initial={{ y: '100%' }}
+                  animate={{ y: 0 }}
+                  exit={{ y: '100%' }}
+                  transition={{ duration: 0.3, ease: 'easeOut' }}
+                  className="fixed bottom-0 left-0 right-0 h-[90vh] bg-stone-900 p-4 shadow-2xl z-50 overflow-y-auto"
+                  onClick={(e) => e.stopPropagation()}
                 >
-                  <FiX size={24} />
-                </button>
-                <RightSplit data={splitScreenData} />
-              </motion.div>
+                  <RightSplit
+                    data={splitScreenData}
+                    setIsSplitVisible={setIsSplitVisible}
+                    scrollContainerRef={mobileRightSplitRef}
+                  />
+                </motion.div>
+              </>
             )}
           </AnimatePresence>
         </>
       ) : (
         <Split
           className={`flex flex-grow ${!isSplitVisible ? 'split-collapsed' : ''} ${isGutterDragging ? 'gutter-dragging' : ''}`}
-          sizes={isSplitVisible ? [50, 50] : [100, 0]}
-          minSize={[600, 300]}
+          sizes={isSplitVisible ? [34.375, 65.625] : [100, 0]}
+          minSize={minSizes}
           expandToMin={false}
           gutterSize={isSplitVisible ? 21 : 0}
           gutterAlign="center"
@@ -107,18 +126,14 @@ function App() {
             <Chat isDragging={isDragging} setIsDragging={setIsDragging} isSplitVisible={isSplitVisible} setIsSplitVisible={setIsSplitVisible} setSplitScreenData={setSplitScreenData} />
           </div>
           <div
-            className={`split-panel relative bg-stone-900 ${!isSplitVisible ? 'hidden' : ''}`}
-            style={{ overflow: 'hidden' }}
+            ref={rightSplitRef}
+            className={`split-panel relative bg-stone-900 ${!isSplitVisible ? 'hidden' : ''} overflow-y-auto custom-scrollbar`}
           >
-            <button
-              onClick={() => setIsSplitVisible(!isSplitVisible)}
-              className="absolute top-2 right-2 p-2 text-stone-400 hover:text-stone-200 z-30"
-            >
-              <FiX size={24} />
-            </button>
-            <div className="h-full overflow-y-auto">
-              <RightSplit data={splitScreenData} />
-            </div>
+            <RightSplit
+              data={splitScreenData}
+              setIsSplitVisible={setIsSplitVisible}
+              scrollContainerRef={rightSplitRef}
+            />
           </div>
         </Split>
       )}

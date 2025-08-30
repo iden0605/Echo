@@ -16,6 +16,10 @@ const ComplexTextDisplay = ({ text }) => {
             style={dark}
             language={match[1]}
             PreTag="div"
+            customStyle={{
+              whiteSpace: 'pre-wrap',
+              wordBreak: 'break-word',
+            }}
             {...props}
           >
             {String(children).replace(/\n$/, '')}
@@ -40,9 +44,11 @@ const ComplexTextDisplay = ({ text }) => {
   };
 
   return (
-    <ReactMarkdown components={components} remarkPlugins={[remarkGfm]}>
-      {text}
-    </ReactMarkdown>
+    <div className="whitespace-normal break-words">
+      <ReactMarkdown components={components} remarkPlugins={[remarkGfm]}>
+        {text}
+      </ReactMarkdown>
+    </div>
   );
 };
 

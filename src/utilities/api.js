@@ -130,6 +130,7 @@ const createNotesFunction = {
 const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
 
 const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
+const genAI2 = new GoogleGenerativeAI(GEMINI_API_KEY);
 
 // Function calling tool
 const tools = {
@@ -167,6 +168,10 @@ const sys1 = `
     if the user asks for a quiz, but did not specify which kind, respond with : quizz
 
     DO NOT RESPOND WITH ANYTHING ELSE
+
+    addtional notes : 
+    - user may prompt with various languages, take that into account when trying to identify how to categorise they response
+    - user response may be a reply to previous text, refer to the whole conversation's context top better categorise utilities
     `;
 
 const sys2 = (h) => `
@@ -186,9 +191,10 @@ const sys2 = (h) => `
     You can only perform ONE function call at a time, 
     so if the user asks for more than one of those, asks them what do they want first.
 
-    and if the user asks for quiz, but did not specify which kind, kindly ask them which kind they want and list the available kinds.
-
-    if the user asks for something outside of these scopes, let them know you can't do it.
+    Additional notes to remember : 
+    - and if the user asks for quiz, but did not specify which kind, kindly ask them which kind they want and list the available kinds.
+    - if the user asks for something outside of these scopes, let them know you can't do it.
+    - for longer responses, try to format responses in a more aesthetic way (eg: titles, emojis if needed .etc)
 
     For additional context, here is the chat history : 
     ${h}
@@ -201,6 +207,11 @@ const sys3 = (f, h) => `
 
     the input should contain the context needed to use the respective functions required.
     you MUST use the function given.
+
+    Here are some additional notes to remember: 
+    - try to format notes in an aesthetic way (eg: spacing, headers, titles, seperators, bold/italics .etc).
+    - for longer responses, try to format responses in a more aesthetic way (eg: titles, emojis if needed .etc).
+    - in the event where the user does not specify how many questions they want when generating a quiz, avoid generating less than 5 questions.
 
     For additional context, here is the chat history : 
     ${h}
@@ -244,7 +255,7 @@ async function uploadFiles(files) {
     return uploadedFiles;
 }
 
-export async function generateText(prompt, history, files = []) {
+export async function generateText(prompt, history, files = [], signal) {
     let uploadedFiles = [];
     if (files && files.length > 0) {
         uploadedFiles = await uploadFiles(files);
@@ -269,11 +280,13 @@ export async function generateText(prompt, history, files = []) {
         contentss = [{ text: prompt }];
     }
 
-    const model1 = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
+    const model1 = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
     const response1 = await model1.generateContent({
         systemInstruction: sys1,
         contents: [{ role: "user", parts: contentsss }]
-    });
+    }, { signal });
+
+    if (signal.aborted) return { response: "", type: "none", content: "" };
 
     const r = response1.response.text();
 
@@ -299,37 +312,41 @@ export async function generateText(prompt, history, files = []) {
         const response2 = await model2.generateContent({
             systemInstruction: sys2(history),
             contents: [{ role: "user", parts: contentss }]
-        });
+        }, { signal });
+        if (signal.aborted) return { response: "", type: "none", content: "" };
         r2 = response2.response.text();
         return returnVal(r2, null, null);
     }
 
     // function calling version
-    const model3 = genAI.getGenerativeModel({ model: "gemini-2.5-flash", tools: [tools] });
-    const response3 = await model3.generateContent({
-        systemInstruction: sys3(functionToCall, history),
-        contents: [{ role: "user", parts: contentss }]
-    });
+    const attempt = 3;
+    let art = returnVal("Sorry, I seem to have encountered a problem, please try again", null, null);
 
-    let art = {};
+    for (let i = 0; i < attempt; i++){
+        
+        const model3 = genAI2.getGenerativeModel({ model: "gemini-2.5-flash", tools: [tools] });
+        const response3 = await model3.generateContent({
+            systemInstruction: sys3(functionToCall, history),
+            contents: [{ role: "user", parts: contentss }]
+        }, { signal });
+        
+        if (signal.aborted) return { response: "", type: "none", content: "" };
 
-    const functionCalls = response3.response.functionCalls();
-    if (functionCalls && functionCalls.length > 0) {
-        const functionCall = functionCalls[0];
-        if (functionCall.name === 'create_flashcards') {
-            art = createFlashcards(functionCall.args.response, functionCall.args.content);
-        } else if (functionCall.name === 'create_multiple_choice_quiz') {
-            art = createMultipleChoiceQuiz(functionCall.args.response, functionCall.args.content, functionCall.args.description);
-        } else if (functionCall.name === 'create_fill_in_the_blanks') {
-            art = createFillInTheBlanks(functionCall.args.response, functionCall.args.content, functionCall.args.description);
-        } else if (functionCall.name === 'generate_notes') {
-            art = generateNotes(functionCall.args.response, functionCall.args.content);
+        const functionCalls = response3.response.functionCalls();
+        if (functionCalls && functionCalls.length > 0) {
+            const functionCall = functionCalls[0];
+            if (functionCall.name === 'create_flashcards') {
+                art = createFlashcards(functionCall.args.response, functionCall.args.content);
+            } else if (functionCall.name === 'create_multiple_choice_quiz') {
+                art = createMultipleChoiceQuiz(functionCall.args.response, functionCall.args.content, functionCall.args.description);
+            } else if (functionCall.name === 'create_fill_in_the_blanks') {
+                art = createFillInTheBlanks(functionCall.args.response, functionCall.args.content, functionCall.args.description);
+            } else if (functionCall.name === 'generate_notes') {
+                art = generateNotes(functionCall.args.response, functionCall.args.content);
+            }
+            console.log(art);
+            break;
         }
-    } else {
-        // Handle cases where no function call is returned, even if expected
-        const r2 = response3.response.text();
-        return returnVal(r2, null, null);
     }
-
     return art;
 }

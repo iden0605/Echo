@@ -33,23 +33,23 @@ const Flashcards = ({ content }) => {
         onClick={handleFlip}
       >
         <div className="absolute inset-0 w-full h-full flex items-center justify-center backface-hidden">
-          <div className="text-2xl text-center"><ComplexTextDisplay text={question} /></div>
+          <div className="text-lg sm:text-xl text-center"><ComplexTextDisplay text={question} /></div>
         </div>
         <div className="absolute inset-0 w-full h-full flex items-center justify-center bg-stone-700 rounded-lg backface-hidden rotate-y-180">
-          <div className="text-2xl text-center"><ComplexTextDisplay text={answer} /></div>
+          <div className="text-lg sm:text-xl text-center"><ComplexTextDisplay text={answer} /></div>
         </div>
       </div>
       <div className="flex justify-between w-full mt-6">
         <button
           onClick={handlePrev}
-          className="px-6 py-2 bg-stone-700 hover:bg-stone-600 rounded-lg transition-colors"
+          className="px-4 py-2 text-sm sm:text-base bg-stone-700 hover:bg-stone-600 rounded-lg transition-colors"
         >
           Prev
         </button>
-        <div className="text-lg">{`${currentIndex + 1} / ${flashcards.length}`}</div>
+        <div className="text-base sm:text-lg">{`${currentIndex + 1} / ${flashcards.length}`}</div>
         <button
           onClick={handleNext}
-          className="px-6 py-2 bg-stone-700 hover:bg-stone-600 rounded-lg transition-colors"
+          className="px-4 py-2 text-sm sm:text-base bg-stone-700 hover:bg-stone-600 rounded-lg transition-colors"
         >
           Next
         </button>

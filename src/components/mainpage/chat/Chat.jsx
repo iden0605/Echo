@@ -12,6 +12,19 @@ function Chat({ isDragging, setIsDragging, isSplitVisible, setIsSplitVisible, se
   const [isScrolling, setIsScrolling] = useState(false);
   const scrollTimeoutRef = useRef(null);
   const messagesEndRef = useRef(null);
+  const abortControllerRef = useRef(null);
+
+  useEffect(() => {
+    const initialMessages = [
+      { text: null, sender: "user", id: Date.now() + "-initial-user" },
+      {
+        text: "Hi, I'm Echo, your personal academic weapon. I can help you generate quizzes, flashcards, and notes. How can I help you today?",
+        sender: "ai",
+        id: Date.now() + "-initial-ai"
+      }
+    ];
+    setMessages(initialMessages);
+  }, []);
 
   // State for custom scrollbar
   const [thumbHeight, setThumbHeight] = useState(0);
@@ -97,6 +110,12 @@ function Chat({ isDragging, setIsDragging, isSplitVisible, setIsSplitVisible, se
 
   // Handle user input and AI response
   const handleUserMessage = async (userMessageText, files = []) => {
+    if (!userMessageText.trim() && files.length === 0) {
+      return;
+    }
+    abortControllerRef.current = new AbortController();
+    const signal = abortControllerRef.current.signal;
+
     const userMessage = { text: userMessageText, sender: "user", files: files, id: Date.now() + "-user" };
     const newMessages = [...messages, userMessage];
     const emptyAiMessage = { text: "", sender: "ai", id: Date.now() + "-ai" };
@@ -104,32 +123,58 @@ function Chat({ isDragging, setIsDragging, isSplitVisible, setIsSplitVisible, se
     setMessages((prevMessages) => [...prevMessages, userMessage, emptyAiMessage]);
     setAiLoading(true);
 
-    const history = newMessages.map(msg => `${msg.sender}: ${msg.text}`).join('\n');
-    const result = await generateText(userMessageText, history, files);
+    try {
+      const history = newMessages.map(msg => `${msg.sender}: ${msg.text}`).join('\n');
+      const result = await generateText(userMessageText, history, files, signal);
 
-    const { response, type, content, desc } = result;
+      const { response, type, content, desc } = result;
 
-    setMessages((prevMessages) => {
-      const updatedMessages = [...prevMessages];
-      const aiMessageIndex = updatedMessages.findIndex(msg => msg.id === emptyAiMessage.id);
-      if (aiMessageIndex !== -1) {
-        updatedMessages[aiMessageIndex] = { ...updatedMessages[aiMessageIndex], text: response, type: type };
+      setMessages((prevMessages) => {
+        const updatedMessages = [...prevMessages];
+        const aiMessageIndex = updatedMessages.findIndex(msg => msg.id === emptyAiMessage.id);
+        if (aiMessageIndex !== -1) {
+          updatedMessages[aiMessageIndex] = { ...updatedMessages[aiMessageIndex], text: response, type: type };
+        }
+        return updatedMessages;
+      });
+
+      if (type) {
+        setSplitScreenData({ type, content, desc });
+        setIsSplitVisible(true);
+      } else {
+        setSplitScreenData({ type: null, content: null, desc: null });
+        setIsSplitVisible(false);
       }
-      return updatedMessages;
-    });
-
-    if (type) {
-      setSplitScreenData({ type, content, desc });
-      setIsSplitVisible(true);
-    } else {
-      setSplitScreenData({ type: null, content: null, desc: null });
-      setIsSplitVisible(false);
+    } catch (error) {
+      if (error.name !== 'GoogleGenerativeAIAbortError') {
+        console.error("Error generating text:", error);
+      }
+    } finally {
+      setAiLoading(false);
     }
-
-    setAiLoading(false);
   };
 
+  const handleStop = () => {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+    setAiLoading(false);
+    // Potentially find the last empty AI message and remove it or update it
+    setMessages(prevMessages => {
+        const lastMessage = prevMessages[prevMessages.length - 1];
+        if (lastMessage && lastMessage.sender === 'ai' && lastMessage.text === '') {
+            // Last message is an empty AI message, so we can just leave it
+            return prevMessages;
+        }
+        // If not, add an empty one to signify the stop
+        return [...prevMessages, { text: "", sender: "ai", id: Date.now() + "-ai", type: "none" }];
+    });
+};
+
   const handleEditMessage = async (userMessageId, newText) => {
+    abortControllerRef.current = new AbortController();
+    const signal = abortControllerRef.current.signal;
+
     let messageHistoryForEdit = [];
     let userMessageIndex = -1;
   
@@ -155,29 +200,35 @@ function Chat({ isDragging, setIsDragging, isSplitVisible, setIsSplitVisible, se
       setMessages(prev => [...prev, emptyAiMessage]);
       setAiLoading(true);
   
-      const history = messageHistoryForEdit.map(msg => `${msg.sender}: ${msg.text}`).join('\n');
-      const result = await generateText(newText, history);
+      try {
+        const history = messageHistoryForEdit.map(msg => `${msg.sender}: ${msg.text}`).join('\n');
+        const result = await generateText(newText, history, [], signal);
 
-      const { response, type, content, desc } = result;
+        const { response, type, content, desc } = result;
 
-      setMessages((prevMessages) => {
-        const updatedMessages = [...prevMessages];
-        const aiMessageIndex = updatedMessages.findIndex(msg => msg.id === emptyAiMessage.id);
-        if (aiMessageIndex !== -1) {
-          updatedMessages[aiMessageIndex] = { ...updatedMessages[aiMessageIndex], text: response, type: type };
+        setMessages((prevMessages) => {
+          const updatedMessages = [...prevMessages];
+          const aiMessageIndex = updatedMessages.findIndex(msg => msg.id === emptyAiMessage.id);
+          if (aiMessageIndex !== -1) {
+            updatedMessages[aiMessageIndex] = { ...updatedMessages[aiMessageIndex], text: response, type: type };
+          }
+          return updatedMessages;
+        });
+
+        if (type) {
+          setSplitScreenData({ type, content, desc });
+          setIsSplitVisible(true);
+        } else {
+          setSplitScreenData({ type: null, content: null, desc: null });
+          setIsSplitVisible(false);
         }
-        return updatedMessages;
-      });
-
-      if (type) {
-        setSplitScreenData({ type, content, desc });
-        setIsSplitVisible(true);
-      } else {
-        setSplitScreenData({ type: null, content: null, desc: null });
-        setIsSplitVisible(false);
+      } catch (error) {
+        if (error.name !== 'GoogleGenerativeAIAbortError') {
+          console.error("Error generating text:", error);
+        }
+      } finally {
+        setAiLoading(false);
       }
-
-      setAiLoading(false);
     }
   };
 
@@ -216,7 +267,7 @@ function Chat({ isDragging, setIsDragging, isSplitVisible, setIsSplitVisible, se
       )}
 
       <div ref={chatboxContainerRef} className="flex justify-center px-4 pb-2 md:pb-4 z-20">
-        <InputBox onSendMessage={handleUserMessage} aiLoading={aiLoading} isDragging={isDragging} setIsDragging={setIsDragging} />
+        <InputBox onSendMessage={handleUserMessage} aiLoading={aiLoading} isDragging={isDragging} setIsDragging={setIsDragging} onStop={handleStop} />
       </div>
     </div>
   );

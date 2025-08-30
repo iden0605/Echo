@@ -60,3 +60,27 @@
 .gutter-dragging .gutter.gutter-horizontal::before {
   background-color: #cce5ff;
 }
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  transition: width 0.3s ease-in-out;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: black;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #555;
+  border-radius: 3px;
+}
+
+.custom-scrollbar:not(:hover)::-webkit-scrollbar-thumb {
+  background: transparent;
+}
+
+@media (max-width: 768px) {
+  .split > div:last-child {
+    box-shadow: -5px 0 15px rgba(0, 0, 0, 0.5);
+  }
+}

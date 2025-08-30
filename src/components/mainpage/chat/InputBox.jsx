@@ -6,7 +6,7 @@ import { FaMicrophone} from "react-icons/fa";
 import { MdStop } from "react-icons/md";
 import useSpeechToText from "../../../utilities/useSpeechToText";
 
-function InputBox({ onSendMessage, aiLoading, isDragging, setIsDragging }) {
+function InputBox({ onSendMessage, aiLoading, isDragging, setIsDragging, onStop }) {
   const [currInput, setCurrInput] = useState("");
   const [selectedFiles, setSelectedFiles] = useState([]);
   const { isRecording, transcript, startRecording, stopRecording, setTranscript } = useSpeechToText();
@@ -91,7 +91,7 @@ function InputBox({ onSendMessage, aiLoading, isDragging, setIsDragging }) {
   }, [currInput]);
 
   const handleSend = async () => {
-    if (currInput.trim() === "" && selectedFiles.length === 0) return;
+    if (aiLoading || (currInput.trim() === "" && selectedFiles.length === 0)) return;
     onSendMessage(currInput, selectedFiles);
     setCurrInput("");
     setSelectedFiles([]);
@@ -132,14 +132,18 @@ function InputBox({ onSendMessage, aiLoading, isDragging, setIsDragging }) {
     }
   };
 
-  const handleStopRecordingButton = () => {
-    stopRecording();
+  const handleStop = () => {
+    if (aiLoading) {
+      onStop();
+    } else {
+      stopRecording();
+    }
   };
 
   const micSendButtonContent = (
     <>
       {aiLoading || isRecording ? (
-        <button className="p-2" onClick={handleStopRecordingButton}>
+        <button className="p-2" onClick={handleStop}>
           <MdStop size={20} />
         </button>
       ) : currInput === "" ? (
@@ -218,14 +222,14 @@ function InputBox({ onSendMessage, aiLoading, isDragging, setIsDragging }) {
         />
         {/* Mobile Plus Button */}
       <div className="flex items-center text-stone-400 hover:bg-stone-600 rounded-full md:hidden">
-        <button className="p-2" onClick={handlePlusClick}>
+        <button className="p-2" onClick={handlePlusClick} disabled={aiLoading}>
           <AiOutlinePlus size={20} />
         </button>
       </div>
 
       <textarea
         ref={textareaRef}
-        placeholder="Ask Echo"
+        placeholder={aiLoading ? "Echo is thinking..." : "Ask Echo"}
         className="w-full flex-grow bg-transparent select-none outline-none text-base leading-normal text-cream-50 pr-3 pl-4 py-2 overflow-y-auto resize-none custom-scrollbar"
         value={currInput}
         onChange={(e) => {
@@ -236,8 +240,10 @@ function InputBox({ onSendMessage, aiLoading, isDragging, setIsDragging }) {
         }}
         onKeyDown={(e) => {
           if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault()
-            handleSend();
+            e.preventDefault();
+            if (!aiLoading) {
+              handleSend();
+            }
           }
         }}
         rows={1}
@@ -247,7 +253,7 @@ function InputBox({ onSendMessage, aiLoading, isDragging, setIsDragging }) {
       {/* Desktop Buttons */}
       <div className="hidden md:flex justify-between items-center pt-2 w-full">
         <div className="flex items-center space-x-2 text-stone-400 hover:bg-stone-600 rounded-full ml-2">
-          <button className="p-2" onClick={handlePlusClick}>
+          <button className="p-2" onClick={handlePlusClick} disabled={aiLoading}>
             <AiOutlinePlus size={20} />
           </button>
         </div>

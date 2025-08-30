@@ -1,4 +1,5 @@
 @import "tailwindcss";
+
 @import '@fontsource/nunito';
 
 html, body {
@@ -11,13 +12,9 @@ html, body {
   font-family: 'Nunito', sans-serif;
   background: linear-gradient(to bottom right, #1a1a1a, #2a2a2a);
   color: #f5f5dc;
+  overflow-y: hidden;
 }
 
-@media (max-width: 768px) {
-  html, body {
-    overflow-y: auto;
-  }
-}
 
 html::-webkit-scrollbar, body::-webkit-scrollbar {
   display: none;
@@ -60,7 +57,7 @@ html::-webkit-scrollbar, body::-webkit-scrollbar {
   width: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #2a2a2a;
+  background: #1c1917;
 }
 ::-webkit-scrollbar-thumb {
   background: #555;
@@ -85,36 +82,92 @@ html::-webkit-scrollbar, body::-webkit-scrollbar {
   -webkit-backface-visibility: hidden;
 }
 
-/* Prose styles for Notes component */
-.prose {
-  color: #f5f5dc;
-}
-.prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 {
+/* Notes component styles */
+.notes-container h1 {
+  font-size: 1.75em;
+  font-weight: bold;
+  margin-top: 1em;
+  margin-bottom: 0.5em;
   color: #fff;
 }
-.prose a {
+.notes-container h2 {
+  font-size: 1.5em;
+  font-weight: bold;
+  margin-top: 1em;
+  margin-bottom: 0.5em;
+  color: #fff;
+}
+.notes-container h3 {
+  font-size: 1.25em;
+  font-weight: bold;
+  margin-top: 1em;
+  margin-bottom: 0.5em;
+  color: #fff;
+}
+
+@media (min-width: 640px) {
+  .notes-container h1 {
+    font-size: 2.25em;
+  }
+  .notes-container h2 {
+    font-size: 1.75em;
+  }
+  .notes-container h3 {
+    font-size: 1.5em;
+  }
+}
+.notes-container p {
+  margin-bottom: 1em;
+}
+.notes-container ul {
+  list-style-type: disc;
+  margin-left: 1.5em;
+  margin-bottom: 1em;
+}
+.notes-container ol {
+  list-style-type: decimal;
+  margin-left: 1.5em;
+  margin-bottom: 1em;
+}
+.notes-container li {
+  margin-bottom: 0.5em;
+}
+.notes-container strong {
+  font-weight: bold;
+  color: #fff;
+}
+.notes-container em {
+  font-style: italic;
+}
+.notes-container a {
   color: #90cdf4;
+  text-decoration: underline;
 }
-.prose strong {
-  color: #fff;
-}
-.prose blockquote {
+.notes-container blockquote {
   color: #a0aec0;
-  border-left-color: #4a5568;
+  border-left: 4px solid #4a5568;
+  padding-left: 1em;
+  margin-left: 0;
 }
-.prose code {
+.notes-container code {
   color: #f5f5dc;
   background-color: #2d3748;
   padding: 0.2em 0.4em;
   border-radius: 0.3em;
 }
-.prose pre {
+.notes-container pre {
   background-color: #1a202c;
   color: #f5f5dc;
+  padding: 1em;
+  border-radius: 0.5em;
+  white-space: pre-wrap;
+  word-break: break-word;
 }
-.prose ul > li::before {
-  background-color: #f5f5dc;
+
+.notes-container .flex svg {
+  transition: color 0.3s ease;
 }
-.prose ol > li::before {
-  color: #f5f5dc;
+
+.notes-container .flex svg:hover {
+  color: #90cdf4;
 }
