@@ -1,14 +1,11 @@
 .gutter {
   background-color: transparent;
-  position: absolute;
+  position: relative;
   z-index: 10;
-  top: 0;
-  height: 100%;
 }
 
 .gutter.gutter-horizontal {
   cursor: col-resize;
-  width: 21px;
   margin-left: -10px;
   margin-right: -10px;
 }
@@ -17,9 +14,9 @@
 .gutter.gutter-horizontal::after {
   content: '';
   position: absolute;
+  left: 50%;
   top: 0;
   bottom: 0;
-  left: 50%;
   transform: translateX(-50%);
   width: 1px;
   background-color: #4a4a4a;
@@ -31,8 +28,8 @@
 .gutter.gutter-horizontal::before {
   content: '';
   position: absolute;
-  top: 50%;
   left: 50%;
+  top: 50%;
   transform: translate(-50%, -50%);
   width: 6px;
   height: 20px;
@@ -61,5 +58,5 @@
 }
 
 .gutter-dragging .gutter.gutter-horizontal::before {
-  background-color: #66b2ff;
+  background-color: #cce5ff;
 }

@@ -27,7 +27,7 @@ const RightSplit = ({ data }) => {
   };
 
   return (
-    <div className="h-full flex-grow flex items-center justify-center bg-stone-900 text-white p-4 md:pl-20 overflow-hidden">
+    <div className="h-full flex-grow flex items-center bg-stone-900 text-white p-1 md:pl-5 overflow-hidden">
       <div className="w-full h-full md:w-[36rem] md:h-[40rem] overflow-y-auto flex-shrink-0">{renderComponent()}</div>
     </div>
   );
