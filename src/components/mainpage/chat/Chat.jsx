@@ -249,7 +249,7 @@ function Chat({ isDragging, setIsDragging, isSplitVisible, setIsSplitVisible, se
   };
 
   return (
-    <div className="relative flex flex-col flex-grow overflow-hidden h-full pt-16">
+    <div className="relative flex flex-col flex-grow overflow-hidden h-full">
       <style>{`
         .chat-content::-webkit-scrollbar {
           display: none;
