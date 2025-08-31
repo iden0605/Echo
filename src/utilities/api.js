@@ -172,6 +172,7 @@ const sys1 = `
     addtional notes : 
     - user may prompt with various languages, take that into account when trying to identify how to categorise they response
     - user response may be a reply to previous text, refer to the whole conversation's context top better categorise utilities
+    - if the user asks for one of the above, but there isnt enough context/specification for any of those to be made, classify it as respondonly
     `;
 
 const sys2 = (h) => `
@@ -195,6 +196,7 @@ const sys2 = (h) => `
     - and if the user asks for quiz, but did not specify which kind, kindly ask them which kind they want and list the available kinds.
     - if the user asks for something outside of these scopes, let them know you can't do it.
     - for longer responses, try to format responses in a more aesthetic way (eg: titles, emojis if needed .etc)
+    - if the user asks for one of the above, but there isnt enough context/specification for any of those to be made, ask them for context/specifications
 
     For additional context, here is the chat history : 
     ${h}

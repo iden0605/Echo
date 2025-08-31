@@ -9,6 +9,7 @@ import useSpeechToText from "../../../utilities/useSpeechToText";
 function InputBox({ onSendMessage, aiLoading, isDragging, setIsDragging, onStop }) {
   const [currInput, setCurrInput] = useState("");
   const [selectedFiles, setSelectedFiles] = useState([]);
+  const [fileError, setFileError] = useState(""); // New state for file errors
   const { isRecording, transcript, startRecording, stopRecording, setTranscript } = useSpeechToText();
   const textareaRef = useRef(null);
   const fileInputRef = useRef(null);
@@ -17,6 +18,8 @@ function InputBox({ onSendMessage, aiLoading, isDragging, setIsDragging, onStop 
   const [thumbWidth, setThumbWidth] = useState(0);
   const [thumbLeft, setThumbLeft] = useState(0);
   const [isScrolling, setIsScrolling] = useState(false);
+
+  const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 
   useEffect(() => {
     const filePreviewElement = filePreviewRef.current;
@@ -102,12 +105,25 @@ function InputBox({ onSendMessage, aiLoading, isDragging, setIsDragging, onStop 
     e.preventDefault();
     e.stopPropagation();
     setIsDragging(false);
+    setFileError(""); // Clear previous errors
 
-    const files = Array.from(e.dataTransfer.files);
-    if (files && files.length > 0) {
-      setSelectedFiles(prevFiles => [...prevFiles, ...files]);
-      e.dataTransfer.clearData();
+    const droppedFiles = Array.from(e.dataTransfer.files);
+    const validFiles = [];
+    let hasError = false;
+
+    for (const file of droppedFiles) {
+      if (file.size > MAX_FILE_SIZE) {
+        setFileError(`File "${file.name}" exceeds the 10MB limit.`);
+        hasError = true;
+      } else {
+        validFiles.push(file);
+      }
     }
+
+    if (validFiles.length > 0) {
+      setSelectedFiles(prevFiles => [...prevFiles, ...validFiles]);
+    }
+    e.dataTransfer.clearData();
   };
 
   const handlePlusClick = () => {
@@ -115,8 +131,25 @@ function InputBox({ onSendMessage, aiLoading, isDragging, setIsDragging, onStop 
   };
 
   const handleFileChange = (event) => {
-    const files = Array.from(event.target.files);
-    setSelectedFiles(prevFiles => [...prevFiles, ...files]);
+    setFileError(""); // Clear previous errors
+    const newFiles = Array.from(event.target.files);
+    const validFiles = [];
+    let hasError = false;
+
+    for (const file of newFiles) {
+      if (file.size > MAX_FILE_SIZE) {
+        setFileError(`File "${file.name}" exceeds the 10MB limit.`);
+        hasError = true;
+      } else {
+        validFiles.push(file);
+      }
+    }
+
+    if (validFiles.length > 0) {
+      setSelectedFiles(prevFiles => [...prevFiles, ...validFiles]);
+    }
+    // Clear the input to allow selecting the same file again if needed
+    event.target.value = null;
   };
 
   const handleRemoveFile = (fileToRemove) => {
@@ -168,6 +201,11 @@ function InputBox({ onSendMessage, aiLoading, isDragging, setIsDragging, onStop 
           <p className="text-stone-300 text-lg font-semibold">drag and drop files here</p>
         </div>
       )}
+      {fileError && (
+        <div className="bg-red-500 text-white text-sm p-2 rounded-t-lg text-center">
+          {fileError}
+        </div>
+      )}
       {selectedFiles.length > 0 && (
         <div className="relative bg-stone-700 rounded-t-4xl overflow-hidden">
           <div
@@ -177,8 +215,8 @@ function InputBox({ onSendMessage, aiLoading, isDragging, setIsDragging, onStop 
             <div className="flex space-x-4">
               {selectedFiles.map((file, index) => (
                 <div key={index} className="flex-shrink-0 bg-stone-800 rounded-lg w-40 h-24 relative overflow-hidden group border border-stone-500">
-                  <button 
-                    onClick={() => handleRemoveFile(file)} 
+                  <button
+                    onClick={() => handleRemoveFile(file)}
                     className="absolute top-1 right-1 bg-black/50 rounded-full p-0.5 hover:bg-black/75 z-10 invisible group-hover:visible transition-opacity duration-300"
                   >
                     <AiOutlineClose size={12} className="text-white"/>
@@ -200,10 +238,10 @@ function InputBox({ onSendMessage, aiLoading, isDragging, setIsDragging, onStop 
           </div>
           {/* Custom Scrollbar */}
           <div className="absolute bottom-1 left-0 w-full h-1.5 px-4">
-            <div 
+            <div
               className="h-full bg-stone-500 rounded-full transition-opacity duration-500"
-              style={{ 
-                width: `${thumbWidth}px`, 
+              style={{
+                width: `${thumbWidth}px`,
                 transform: `translateX(${thumbLeft}px)`,
                 opacity: isScrolling ? 1 : 0,
               }}
@@ -211,7 +249,7 @@ function InputBox({ onSendMessage, aiLoading, isDragging, setIsDragging, onStop 
           </div>
         </div>
       )}
-      <div className={`flex flex-row items-end w-full h-auto bg-stone-700 p-2 z-10 md:flex-col md:p-4 md:min-h-20 ${selectedFiles.length > 0 ? 'rounded-b-4xl' : 'rounded-4xl'}`}>
+      <div className={`flex flex-row items-end w-full h-auto bg-stone-700 p-2 z-10 md:flex-col md:p-4 md:min-h-20 ${selectedFiles.length > 0 || fileError ? 'rounded-b-4xl' : 'rounded-4xl'}`}>
         <input
           type="file"
           ref={fileInputRef}
