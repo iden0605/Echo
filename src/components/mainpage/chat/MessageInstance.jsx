@@ -30,8 +30,8 @@ function MessageInstance({ userMessage, aiMessage, aiLoading, chatboxHeight, onE
     if (chatboxHeight > 0) {
       const header = document.getElementById('main-header');
       const headerHeight = header ? header.offsetHeight : 0;
-      const calculatedHeight = window.innerHeight - chatboxHeight - headerHeight - 32;
-      setMinHeight(`${calculatedHeight}px`);
+      const calculatedHeight = `calc(var(--vh, 1vh) * 100 - ${chatboxHeight}px - ${headerHeight}px - 32px)`;
+      setMinHeight(calculatedHeight);
     }
   }, [chatboxHeight]);
 

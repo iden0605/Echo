@@ -76,7 +76,8 @@ function App() {
 
   return (
     <div
-      className="flex h-screen overflow-hidden"
+      className="flex overflow-hidden"
+      style={{ height: 'calc(var(--vh, 1vh) * 100)' }}
       onDragEnter={handleDragEnter}
       onDragLeave={handleDragLeave}
       onDragOver={handleDragOver}
