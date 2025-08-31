@@ -12,6 +12,17 @@ function App() {
   const [isGutterDragging, setIsGutterDragging] = useState(false);
   const [isSplitVisible, setIsSplitVisible] = useState(false);
   const [splitScreenData, setSplitScreenData] = useState({ type: null, content: null });
+
+  const handleNotesUpdate = (updatedText) => {
+    setSplitScreenData(prevData => ({
+      ...prevData,
+      content: {
+        ...prevData.content,
+        text: updatedText
+      }
+    }));
+  };
+
   const dragCounter = useRef(0);
   const rightSplitRef = useRef(null);
   const mobileRightSplitRef = useRef(null);
@@ -24,7 +35,7 @@ function App() {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 768);
       const screenWidth = window.innerWidth;
-      const leftMin = (screenWidth * 660) / 1920;
+      const leftMin = (screenWidth * 300) / 1920;
       const rightMin = (screenWidth * 800) / 1920;
       setMinSizes([leftMin, rightMin]);
     };
@@ -100,6 +111,7 @@ function App() {
                     data={splitScreenData}
                     setIsSplitVisible={setIsSplitVisible}
                     scrollContainerRef={mobileRightSplitRef}
+                    onNotesUpdate={handleNotesUpdate}
                   />
                 </motion.div>
               </>
@@ -133,6 +145,7 @@ function App() {
               data={splitScreenData}
               setIsSplitVisible={setIsSplitVisible}
               scrollContainerRef={rightSplitRef}
+              onNotesUpdate={handleNotesUpdate}
             />
           </div>
         </Split>

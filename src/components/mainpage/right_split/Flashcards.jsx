@@ -29,7 +29,7 @@ const Flashcards = ({ content }) => {
   return (
     <div className="w-full max-w-2xl mx-auto flex flex-col items-center">
       <div
-        className={`relative w-full h-80 bg-stone-800 rounded-lg shadow-lg p-6 cursor-pointer transition-transform duration-500 transform-style-3d ${isFlipped ? 'rotate-y-180' : ''}`}
+        className={`relative w-full h-80 bg-stone-800 rounded-lg shadow-lg p-6 cursor-pointer transition-transform duration-100 transform-style-3d ${isFlipped ? 'rotate-y-180' : ''}`}
         onClick={handleFlip}
       >
         <div className="absolute inset-0 w-full h-full flex items-center justify-center backface-hidden">

@@ -4,7 +4,7 @@ import MultiQuiz from './MultiQuiz';
 import BlanksQuiz from './BlanksQuiz';
 import Notes from './Notes';
 
-const RightSplit = ({ data, setIsSplitVisible, scrollContainerRef }) => {
+const RightSplit = ({ data, setIsSplitVisible, scrollContainerRef, onNotesUpdate }) => {
   const [relativeWidth, setRelativeWidth] = useState(0);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 
@@ -41,7 +41,7 @@ const RightSplit = ({ data, setIsSplitVisible, scrollContainerRef }) => {
       case 'blanks_quiz':
         return <BlanksQuiz content={content} desc={desc} scrollContainerRef={scrollContainerRef} />;
       case 'notes':
-        return <Notes content={content} />;
+        return <Notes content={content} onNotesUpdate={onNotesUpdate} />;
       default:
         return null;
     }
@@ -52,7 +52,7 @@ const RightSplit = ({ data, setIsSplitVisible, scrollContainerRef }) => {
   );
 
   return (
-    <div className="h-full w-full flex flex-col bg-stone-900 text-white">
+    <div className="h-full w-full flex flex-col bg-stone-900 text-white overflow-x-hidden">
       <div className="h-8 flex-shrink-0 flex items-center justify-end">
         <button
           onClick={() => setIsSplitVisible(false)}

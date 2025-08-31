@@ -148,6 +148,14 @@ function Chat({ isDragging, setIsDragging, isSplitVisible, setIsSplitVisible, se
     } catch (error) {
       if (error.name !== 'GoogleGenerativeAIAbortError') {
         console.error("Error generating text:", error);
+        setMessages((prevMessages) => {
+          const updatedMessages = [...prevMessages];
+          const aiMessageIndex = updatedMessages.findIndex(msg => msg.id === emptyAiMessage.id);
+          if (aiMessageIndex !== -1) {
+            updatedMessages[aiMessageIndex] = { ...updatedMessages[aiMessageIndex], text: "Sorry, I'm having trouble connecting. Please check your internet connection and try again.", type: "error" };
+          }
+          return updatedMessages;
+        });
       }
     } finally {
       setAiLoading(false);
@@ -225,6 +233,14 @@ function Chat({ isDragging, setIsDragging, isSplitVisible, setIsSplitVisible, se
       } catch (error) {
         if (error.name !== 'GoogleGenerativeAIAbortError') {
           console.error("Error generating text:", error);
+          setMessages((prevMessages) => {
+            const updatedMessages = [...prevMessages];
+            const aiMessageIndex = updatedMessages.findIndex(msg => msg.id === emptyAiMessage.id);
+            if (aiMessageIndex !== -1) {
+              updatedMessages[aiMessageIndex] = { ...updatedMessages[aiMessageIndex], text: "Sorry, I'm having trouble connecting. Please check your internet connection and try again.", type: "error" };
+            }
+            return updatedMessages;
+          });
         }
       } finally {
         setAiLoading(false);
