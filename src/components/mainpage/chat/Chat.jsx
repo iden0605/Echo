@@ -26,7 +26,6 @@ function Chat({ isDragging, setIsDragging, isSplitVisible, setIsSplitVisible, se
     setMessages(initialMessages);
   }, []);
 
-  // State for custom scrollbar
   const [thumbHeight, setThumbHeight] = useState(0);
   const [thumbTop, setThumbTop] = useState(0);
 
@@ -34,7 +33,6 @@ function Chat({ isDragging, setIsDragging, isSplitVisible, setIsSplitVisible, se
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  // Scroll to Bottom
   useEffect(() => {
     const timer = setTimeout(() => {
       scrollToBottom();
@@ -42,14 +40,12 @@ function Chat({ isDragging, setIsDragging, isSplitVisible, setIsSplitVisible, se
     return () => clearTimeout(timer);
   }, [messages.length]);
 
-  // Chat height calculation
   useEffect(() => {
     if (chatboxContainerRef.current) {
       setChatboxHeight(chatboxContainerRef.current.offsetHeight);
     }
   }, [messages.length]);
 
-  // Custom Scrollbar Logic
   useEffect(() => {
     const chatContentElement = chatContentRef.current;
 
@@ -108,7 +104,6 @@ function Chat({ isDragging, setIsDragging, isSplitVisible, setIsSplitVisible, se
     };
   }, [messages]);
 
-  // Handle user input and AI response
   const handleUserMessage = async (userMessageText, files = []) => {
     if (!userMessageText.trim() && files.length === 0) {
       return;
@@ -167,14 +162,11 @@ function Chat({ isDragging, setIsDragging, isSplitVisible, setIsSplitVisible, se
       abortControllerRef.current.abort();
     }
     setAiLoading(false);
-    // Potentially find the last empty AI message and remove it or update it
     setMessages(prevMessages => {
         const lastMessage = prevMessages[prevMessages.length - 1];
         if (lastMessage && lastMessage.sender === 'ai' && lastMessage.text === '') {
-            // Last message is an empty AI message, so we can just leave it
             return prevMessages;
         }
-        // If not, add an empty one to signify the stop
         return [...prevMessages, { text: "", sender: "ai", id: Date.now() + "-ai", type: "none" }];
     });
 };
@@ -263,7 +255,6 @@ function Chat({ isDragging, setIsDragging, isSplitVisible, setIsSplitVisible, se
         <div ref={messagesEndRef} />
       </div>
       
-      {/* Custom Scrollbar */}
       {thumbHeight > 0 && (
         <div 
           className="absolute top-16 right-0 w-2 py-1 pointer-events-none"

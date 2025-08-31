@@ -55,14 +55,14 @@ const Notes = ({ content, onNotesUpdate }) => {
 
   const removeMarkdown = (text) => {
     return text
-      .replace(/^#+\s/gm, '') // Remove headers
-      .replace(/(\*\*|__)(.*?)\1/g, '$2') // Remove bold
-      .replace(/(\*|_)(.*?)\1/g, '$2') // Remove italics
-      .replace(/~~(.*?)~~/g, '$1') // Remove strikethrough
-      .replace(/\[(.*?)\]\(.*?\)/g, '$1') // Remove links
-      .replace(/`{1,3}(.*?)`{1,3}/g, '$1') // Remove inline and block code
-      .replace(/^>\s/gm, '') // Remove blockquotes
-      .replace(/^\s*[-*+]\s/gm, ''); // Remove list items
+      .replace(/^#+\s/gm, '')
+      .replace(/(\*\*|__)(.*?)\1/g, '$2')
+      .replace(/(\*|_)(.*?)\1/g, '$2')
+      .replace(/~~(.*?)~~/g, '$1')
+      .replace(/\[(.*?)\]\(.*?\)/g, '$1')
+      .replace(/`{1,3}(.*?)`{1,3}/g, '$1')
+      .replace(/^>\s/gm, '')
+      .replace(/^\s*[-*+]\s/gm, '');
   };
 
   const handleCopy = () => {

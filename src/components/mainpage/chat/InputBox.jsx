@@ -19,7 +19,7 @@ function InputBox({ onSendMessage, aiLoading, isDragging, setIsDragging, onStop 
   const [thumbLeft, setThumbLeft] = useState(0);
   const [isScrolling, setIsScrolling] = useState(false);
 
-  const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+  const MAX_FILE_SIZE = 10 * 1024 * 1024;
 
   useEffect(() => {
     const filePreviewElement = filePreviewRef.current;
@@ -28,9 +28,8 @@ function InputBox({ onSendMessage, aiLoading, isDragging, setIsDragging, onStop 
       if (!filePreviewElement) return;
       const { scrollWidth, clientWidth, scrollLeft } = filePreviewElement;
       
-      // Account for the p-4 padding on the scroll container
-      const trackWidth = clientWidth - 32; // The track has px-4, so its width is clientWidth - 32
-      const contentVisibleWidth = clientWidth - 32; // The visible content area is also clientWidth - 32
+      const trackWidth = clientWidth - 32;
+      const contentVisibleWidth = clientWidth - 32;
       
       const scrollableWidth = scrollWidth - contentVisibleWidth;
 
@@ -39,7 +38,7 @@ function InputBox({ onSendMessage, aiLoading, isDragging, setIsDragging, onStop 
         return;
       }
 
-      const newThumbWidth = Math.max((contentVisibleWidth / scrollWidth) * trackWidth, 20); // Min width of 20px
+      const newThumbWidth = Math.max((contentVisibleWidth / scrollWidth) * trackWidth, 20);
       const thumbMovableWidth = trackWidth - newThumbWidth;
       const newThumbLeft = (scrollLeft / scrollableWidth) * thumbMovableWidth;
 
@@ -61,10 +60,8 @@ function InputBox({ onSendMessage, aiLoading, isDragging, setIsDragging, onStop 
       filePreviewElement.addEventListener('scroll', handleScroll);
     }
 
-    // Recalculate on window resize
     window.addEventListener('resize', updateScrollbar);
 
-    // Recalculate when files change
     const resizeObserver = new ResizeObserver(updateScrollbar);
     if (filePreviewElement) {
       resizeObserver.observe(filePreviewElement);
@@ -105,7 +102,7 @@ function InputBox({ onSendMessage, aiLoading, isDragging, setIsDragging, onStop 
     e.preventDefault();
     e.stopPropagation();
     setIsDragging(false);
-    setFileError(""); // Clear previous errors
+    setFileError("");
 
     const droppedFiles = Array.from(e.dataTransfer.files);
     const validFiles = [];
@@ -131,7 +128,7 @@ function InputBox({ onSendMessage, aiLoading, isDragging, setIsDragging, onStop 
   };
 
   const handleFileChange = (event) => {
-    setFileError(""); // Clear previous errors
+    setFileError("");
     const newFiles = Array.from(event.target.files);
     const validFiles = [];
     let hasError = false;
@@ -148,7 +145,6 @@ function InputBox({ onSendMessage, aiLoading, isDragging, setIsDragging, onStop 
     if (validFiles.length > 0) {
       setSelectedFiles(prevFiles => [...prevFiles, ...validFiles]);
     }
-    // Clear the input to allow selecting the same file again if needed
     event.target.value = null;
   };
 
@@ -236,7 +232,6 @@ function InputBox({ onSendMessage, aiLoading, isDragging, setIsDragging, onStop 
               ))}
             </div>
           </div>
-          {/* Custom Scrollbar */}
           <div className="absolute bottom-1 left-0 w-full h-1.5 px-4">
             <div
               className="h-full bg-stone-500 rounded-full transition-opacity duration-500"
@@ -258,7 +253,6 @@ function InputBox({ onSendMessage, aiLoading, isDragging, setIsDragging, onStop 
           multiple
           accept=".txt,.md,.rtf,.pdf,.docx,.odt,.csv,.xlsx,.ods,.pptx,.odp,.png,.jpg,.jpeg,.gif,.svg,.py,.js,.java,.c,.cpp,.html,.css,.ts"
         />
-        {/* Mobile Plus Button */}
       <div className="flex items-center text-stone-400 hover:bg-stone-600 rounded-full md:hidden">
         <button className="p-2" onClick={handlePlusClick} disabled={aiLoading}>
           <AiOutlinePlus size={20} />
@@ -286,7 +280,6 @@ function InputBox({ onSendMessage, aiLoading, isDragging, setIsDragging, onStop 
         style={{ minHeight: '2.5rem' }}
       />
 
-      {/* Desktop Buttons */}
       <div className="hidden md:flex justify-between items-center pt-2 w-full">
         <div className="flex items-center space-x-2 text-stone-400 hover:bg-stone-600 rounded-full ml-2">
           <button className="p-2" onClick={handlePlusClick} disabled={aiLoading}>
@@ -298,7 +291,6 @@ function InputBox({ onSendMessage, aiLoading, isDragging, setIsDragging, onStop 
         </div>
       </div>
 
-      {/* Mobile Mic/Send Button */}
       <div className={`md:hidden flex items-center text-stone-400 rounded-full hover:bg-stone-600 ${aiLoading || currInput !== "" || isRecording ? "bg-stone-800" : ""}`}>
         {micSendButtonContent}
       </div>

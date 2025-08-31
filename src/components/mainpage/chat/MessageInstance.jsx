@@ -60,7 +60,6 @@ function MessageInstance({ userMessage, aiMessage, aiLoading, chatboxHeight, onE
 
   return (
     <div className="flex flex-col space-y-4" style={{ minHeight: minHeight }}>
-      {/* User Message */}
       {userMessage && userMessage.text && (
         <div
           className="self-end flex flex-col items-end w-full"
@@ -151,7 +150,6 @@ function MessageInstance({ userMessage, aiMessage, aiLoading, chatboxHeight, onE
         </div>
       )}
 
-      {/* AI Message */}
       {aiMessage && (aiMessage.text || aiLoading) && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}

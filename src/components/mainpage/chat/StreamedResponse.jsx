@@ -9,7 +9,6 @@ const StreamedResponse = ({ text }) => {
   const prevTextRef = useRef('');
   const intervalRef = useRef(null);
 
-  // Typing engine
   useEffect(() => {
     intervalRef.current = setInterval(() => {
       if (characterQueue.current.length > 0) {
@@ -21,7 +20,6 @@ const StreamedResponse = ({ text }) => {
     return () => clearInterval(intervalRef.current);
   }, []);
 
-  // Queue manager
   useEffect(() => {
     if (text.length > prevTextRef.current.length) {
       const newCharacters = text.substring(prevTextRef.current.length);

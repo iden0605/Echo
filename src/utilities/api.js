@@ -1,6 +1,5 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-// Helper functions from func.py
 function createFlashcards(response, content) {
     return {
         response: response,
@@ -35,7 +34,6 @@ function generateNotes(response, content) {
     };
 }
 
-// Function Declarations for Gemini API
 const createFlashcardsFunction = {
     name: "create_flashcards",
     description: "Creates flashcards from a provided text or topic.",
@@ -126,13 +124,11 @@ const createNotesFunction = {
     }
 };
 
-// Configure Gemini API
 const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
 
 const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
 const genAI2 = new GoogleGenerativeAI(GEMINI_API_KEY);
 
-// Function calling tool
 const tools = {
     functionDeclarations: [
         createFlashcardsFunction,
@@ -266,7 +262,6 @@ export async function generateText(prompt, history, files = [], signal) {
     let functionToCall = "";
     let respondonly = false;
 
-    // check for the type of output ------------------
     let contentsss;
     let contentss;
 
@@ -303,12 +298,10 @@ export async function generateText(prompt, history, files = [], signal) {
     } else if (r.includes('notes')) {
         functionToCall = 'generate_notes';
     }
-    // -----------------------------------------------
     console.log(`respondonly : ${respondonly}`);
 
     let r2 = "";
 
-    // no need to continue since no function call is needed
     if (respondonly) {
         const model2 = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
         const response2 = await model2.generateContent({
@@ -320,7 +313,6 @@ export async function generateText(prompt, history, files = [], signal) {
         return returnVal(r2, null, null);
     }
 
-    // function calling version
     const attempt = 3;
     let art = returnVal("Sorry, I seem to have encountered a problem, please try again", null, null);
 
