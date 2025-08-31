@@ -18,7 +18,7 @@ function Chat({ isDragging, setIsDragging, isSplitVisible, setIsSplitVisible, se
     const initialMessages = [
       { text: null, sender: "user", id: Date.now() + "-initial-user" },
       {
-        text: "Hi, I'm Echo, your personal academic weapon. I can help you generate quizzes, flashcards, and notes. How can I help you today?",
+        text: "Hi, I'm Echo, your personal academic AI assistant. I can help you generate quizzes, flashcards, and notes. How can I help you today?",
         sender: "ai",
         id: Date.now() + "-initial-ai"
       }

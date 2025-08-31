@@ -1,12 +1,22 @@
-# React + Vite
+# Echo
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Echo is an innovative, AI-powered web application designed to transform conversations into interactive learning experiences. Echo dynamically creates educational materials such as quizzes, flashcards, and notes directly from your chat interactions.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **AI Chat Interface**: Engage in a conversation with a powerful AI to explore topics and ask questions.
+- **Dynamic Content Generation**: Instantly generate various types of learning materials based on the chat content:
+  - **Multiple-Choice Quizzes**: Test your knowledge with relevant, AI-generated questions.
+  - **Flashcards**: Reinforce key concepts with interactive flashcards.
+  - **Fill-in-the-Blanks**: Challenge your recall with contextual blank-filling exercises.
+  - **Notes**: Summarize and organize important information into concise notes.
+- **Responsive Design**: A seamless experience across both desktop and mobile devices, featuring a split-screen layout on larger screens and an intuitive mobile interface.
+- **Modern Tech Stack**: Built with the React JS and tailwind css for a fast, reliable, and scalable application.
 
-## Expanding the ESLint configuration
+## Tech Stack
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- **Frontend**: [React](https://reactjs.org/), [Vite](https://vitejs.dev/)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
+- **AI**: [Google Generative AI](https://ai.google/)
+- **UI & Animation**: [Framer Motion](https://www.framer.com/motion/), [React Icons](https://react-icons.github.io/react-icons/)
+- **Markdown & Syntax Highlighting**: [React Markdown](https://github.com/remarkjs/react-markdown), [React Syntax Highlighter](https://github.com/react-syntax-highlighter/react-syntax-highlighter)

@@ -13,6 +13,12 @@ function MessageInstance({ userMessage, aiMessage, aiLoading, chatboxHeight, onE
   const [isEditing, setIsEditing] = useState(false);
   const [editedText, setEditedText] = useState(userMessage?.text || '');
   const [isHovered, setIsHovered] = useState(false);
+  const [isTouchDevice, setIsTouchDevice] = useState(false);
+
+  useEffect(() => {
+    const touchSupport = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    setIsTouchDevice(touchSupport);
+  }, []);
 
   useEffect(() => {
     if (userTextRef.current) {
@@ -78,7 +84,7 @@ function MessageInstance({ userMessage, aiMessage, aiLoading, chatboxHeight, onE
                 className="absolute top-0 translate-y-2 left-0 -translate-x-full p-2 text-stone-400 hover:text-stone-200"
                 variants={buttonVariants}
                 initial="hidden"
-                animate={isHovered && !aiLoading && !isEditing ? 'visible' : 'hidden'}
+                animate={(isHovered || isTouchDevice) && !aiLoading && !isEditing ? 'visible' : 'hidden'}
               >
                 <FiEdit size={17} />
               </motion.button>
