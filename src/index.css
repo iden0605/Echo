@@ -19,8 +19,6 @@ html, body {
   color: #f5f5dc;
   overflow-y: hidden;
   touch-action: none;
-  -webkit-user-select: none;
-  user-select: none;
   -webkit-touch-callout: none;
   -webkit-tap-highlight-color: transparent;
   overscroll-behavior: none;
