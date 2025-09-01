@@ -30,6 +30,12 @@ const ComplexTextDisplay = ({ text }) => {
       }
       return <code className={className} {...props}>{children}</code>;
     },
+    table: ({ node, ...props }) => <table className="table-auto w-full my-4 border border-stone-500" {...props} />,
+    thead: ({ node, ...props }) => <thead className="bg-stone-700" {...props} />,
+    tbody: ({ node, ...props }) => <tbody {...props} />,
+    tr: ({ node, ...props }) => <tr className="border-b border-stone-600" {...props} />,
+    th: ({ node, ...props }) => <th className="px-4 py-2 text-left font-bold" {...props} />,
+    td: ({ node, ...props }) => <td className="px-4 py-2 border-l border-stone-600" {...props} />,
   };
 
   return (

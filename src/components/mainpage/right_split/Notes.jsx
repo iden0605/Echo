@@ -53,8 +53,10 @@ const Notes = ({ content, onNotesUpdate }) => {
     setIsEditing(false);
   };
 
-  const removeMarkdown = (text) => {
-    return text
+  const removeFormatting = (text) => {
+    // First remove HTML tags, then remove markdown.
+    const plainText = text.replace(/<[^>]*>/g, '');
+    return plainText
       .replace(/^#+\s/gm, '')
       .replace(/(\*\*|__)(.*?)\1/g, '$2')
       .replace(/(\*|_)(.*?)\1/g, '$2')
@@ -67,7 +69,7 @@ const Notes = ({ content, onNotesUpdate }) => {
 
   const handleCopy = () => {
     const textToCopy = typeof parsedText === 'string' ? parsedText : JSON.stringify(parsedText, null, 2);
-    const plainText = removeMarkdown(textToCopy);
+    const plainText = removeFormatting(textToCopy);
     navigator.clipboard.writeText(plainText);
     setCopied(true);
     setTimeout(() => setCopied(false), 700);
@@ -75,7 +77,7 @@ const Notes = ({ content, onNotesUpdate }) => {
 
   const handleDownload = () => {
     const textToDownload = typeof parsedText === 'string' ? parsedText : JSON.stringify(parsedText, null, 2);
-    const plainText = removeMarkdown(textToDownload);
+    const plainText = removeFormatting(textToDownload);
     const blob = new Blob([plainText], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
