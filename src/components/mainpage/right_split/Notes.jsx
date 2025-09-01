@@ -138,7 +138,7 @@ const Notes = ({ content, onNotesUpdate }) => {
       <div className="overflow-y-hidden h-full flex-grow whitespace-normal break-words text-sm sm:text-base">
         {isEditing ? (
           <textarea
-            className="w-full overflow-y-hidden bg-stone-700 text-white p-2 rounded resize-none"
+            className="w-full overflow-y bg-stone-700 text-white p-2 rounded resize-none"
             rows={Math.max(5, editedText.split('\n').length)}
             value={editedText}
             onChange={(e) => setEditedText(e.target.value)}

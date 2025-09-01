@@ -52,7 +52,7 @@ const RightSplit = ({ data, setIsSplitVisible, scrollContainerRef, onNotesUpdate
   );
 
   return (
-    <div className="h-full w-full flex flex-col bg-stone-900 text-white overflow-x-hidden">
+    <div className="h-full w-full flex flex-col bg-stone-900 text-white overflow-x-hidden p-4">
       <div className="h-8 flex-shrink-0 flex items-center justify-end">
         <button
           onClick={() => setIsSplitVisible(false)}
@@ -74,7 +74,7 @@ const RightSplit = ({ data, setIsSplitVisible, scrollContainerRef, onNotesUpdate
           </svg>
         </button>
       </div>
-      <div className="flex-grow flex justify-center md:items-center p-1 md:p-5">
+      <div className="flex-grow flex justify-center md:items-center">
         <div
           className={`${
             !isRelativeWidth || isMobile ? 'w-full' : 'pb-20'

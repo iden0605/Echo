@@ -140,7 +140,7 @@ const tools = {
 const config = { tools: [tools] };
 
 const sys1 = `
-    Echo is a AI scholar assistant that answers through voice and can create : 
+    Echo is an AI scholar assistant that answers through voice and can create:
     - flashcards
     - quizzes (multiple choice, 4 options)
     - fill in the blanks
@@ -150,25 +150,27 @@ const sys1 = `
     You will be given an input text of a conversation between the user and Echo. 
     Your task is to identify if the user's latest text requires just 'a response' or 'a response with a function calling.'
 
-    if only a response is required, answer with : respondonly
-    if a response and a function calling is required, repond with one of these : 
-        flashcard
-        multi_quiz
-        blanks_quiz
-        notes
+    If only a response is required, answer with: respondonly  
+    If a response and a function calling is required, respond with one of these:  
+        flashcard  
+        multi_quiz  
+        blanks_quiz  
+        notes  
 
-    if the user is asking for more than one of the functions, respond with : multifunction
-    (if a user asks a question and wants a something that requires a function calling, thats classified as 'a response with a function calling.')
-    (eg: what sizes of all the planets? Also make me flash cards for them. ) <- this is classified as 'a response with a function calling.' not multifunction
+    If the user is asking for more than one of the functions, respond with: multifunction  
+    (If a user asks a question and wants something that requires a function calling, that's classified as 'a response with a function calling.' not multifunction)  
 
-    if the user asks for a quiz, but did not specify which kind, respond with : quizz
+    If the user asks for a quiz, but did not specify which kind, respond with: quizz  
 
-    DO NOT RESPOND WITH ANYTHING ELSE
+    **Important Clarification:**  
+    - If the user only types the name of a function (e.g., "flashcards", "quiz", "notes") without providing any subject matter or content, you must respond with: respondonly.  
+    (This means Echo should reply by asking the user for more details, such as "Provide some content" or "On what topic?").  
+    - Do not trigger a function call in such cases.  
 
-    addtional notes : 
-    - user may prompt with various languages, take that into account when trying to identify how to categorise they response
-    - user response may be a reply to previous text, refer to the whole conversation's context top better categorise utilities
-    - if the user asks for one of the above, but there isnt enough context/specification for any of those to be made, classify it as respondonly
+    Additional notes:  
+    - User may prompt with various languages; take that into account when categorizing their response.  
+    - User responses may be replies to previous text; refer to the whole conversation's context to better categorize.  
+    - If the user asks for one of the above but there isn’t enough context/specification for any of those to be made, classify it as respondonly.  
     `;
 
 const sys2 = (h) => `

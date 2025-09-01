@@ -105,7 +105,7 @@ function App() {
                   animate={{ y: 0 }}
                   exit={{ y: '100%' }}
                   transition={{ duration: 0.3, ease: 'easeOut' }}
-                  className="fixed bottom-0 left-0 right-0 h-[90vh] bg-stone-900 p-4 shadow-2xl z-50 overflow-y-auto"
+                  className="fixed bottom-0 left-0 right-0 h-[85vh] bg-stone-900 shadow-2xl z-50 overflow-y-auto"
                   onClick={(e) => e.stopPropagation()}
                 >
                   <RightSplit

@@ -20,3 +20,33 @@ Echo is an innovative, AI-powered web application designed to transform conversa
 - **AI**: [Google Generative AI](https://ai.google/)
 - **UI & Animation**: [Framer Motion](https://www.framer.com/motion/), [React Icons](https://react-icons.github.io/react-icons/)
 - **Markdown & Syntax Highlighting**: [React Markdown](https://github.com/remarkjs/react-markdown), [React Syntax Highlighter](https://github.com/react-syntax-highlighter/react-syntax-highlighter)
+
+## Getting Started
+
+To get a local copy up and running, follow these simple steps.
+
+### Prerequisites
+
+- [Node.js](https://nodejs.org/) (v18 or later recommended)
+- [npm](https://www.npmjs.com/)
+
+### Installation
+
+1. Clone the repo
+   ```sh
+   git clone https://github.com/iden0605/Echo.git
+   ```
+2. Navigate to the project directory
+   ```sh
+   cd Echo
+   ```
+3. Enter your Gemini API key in the .env file
+4. Install NPM packages
+   ```sh
+   npm install
+   ```
+5. Run the development server
+   ```sh
+   npm run dev
+   ```
+   The application will be available at `http://localhost:5173` (or the next available port).
