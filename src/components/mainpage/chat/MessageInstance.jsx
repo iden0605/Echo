@@ -93,7 +93,7 @@ function MessageInstance({ userMessage, aiMessage, aiLoading, chatboxHeight, onE
                   value={editedText}
                   onChange={(e) => setEditedText(e.target.value)}
                   className="bg-transparent text-cream-50 w-full focus:outline-none resize-none"
-                  style={{ height: 'auto', minHeight: '16rem', maxHeight: '20rem' }}
+                  style={{ height: 'auto', minHeight: '24rem', maxHeight: '28rem' }}
                 />
               ) : (
                 <>

@@ -3,6 +3,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
+import rehypeRaw from 'rehype-raw';
 import 'katex/dist/katex.min.css';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { okaidia } from 'react-syntax-highlighter/dist/esm/styles/prism';
@@ -32,11 +33,11 @@ const ComplexTextDisplay = ({ text }) => {
   };
 
   return (
-    <div className="whitespace-normal break-words">
+    <div className="whitespace-normal break-words notes-container">
       <ReactMarkdown
         components={components}
         remarkPlugins={[remarkGfm, remarkMath]}
-        rehypePlugins={[rehypeKatex]}
+        rehypePlugins={[rehypeKatex, rehypeRaw]}
       >
         {text}
       </ReactMarkdown>

@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import ComplexTextDisplay from '../../shared/ComplexTextDisplay';
 
 const StreamedResponse = ({ text }) => {
-  const charOutputSpeed = 0.1;
+  const charOutputSpeed = 1;
   
   const [displayedText, setDisplayedText] = useState('');
   const characterQueue = useRef([]);
