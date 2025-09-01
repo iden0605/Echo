@@ -179,10 +179,6 @@ const sys2 = (h) => `
     and will be receiving your response via TTS,
     so please give a response in a speech tone rather than a text tone.
 
-    When responding with mathematical content, including equations, formulas, summations, integrals, and differentiation, always enclose it in LaTeX notation. 
-    For inline math, use single dollar signs (e.g., '$f(x) = x^2$'). 
-    For block-level math, use double dollar signs (e.g., '$$ \int_0^1 2x \,dx = 1 $$').
-
     Feel free to perform function calling on any of the defined functions when the user prompts to create any of these: 
     - flash cards
     - multiple choice quiz
@@ -212,10 +208,14 @@ const sys3 = (f, h) => `
     the input should contain the context needed to use the respective functions required.
     you MUST use the function given.
 
+    When responding with mathematical content, including equations, formulas, summations, integrals, and differentiation, always enclose it in LaTeX notation. 
+    For inline math, use single dollar signs (e.g., '$f(x) = x^2$'). 
+    For block-level math, use double dollar signs (e.g., '$$ \int_0^1 2x \,dx = 1 $$').
+
     Here are some additional notes to remember: 
     - try to format notes in an aesthetic way (eg: spacing, headers, titles, seperators, bold/italics .etc).
     - for longer responses, try to format responses in a more aesthetic way (eg: titles, emojis if needed .etc).
-    - in the event where the user does not specify how many questions they want when generating a quiz, avoid generating less than 5 questions.
+    - in the event where the user does not specify how many questions they want when generating a quiz, generate more than 5 questions.
 
     For additional context, here is the chat history : 
     ${h}

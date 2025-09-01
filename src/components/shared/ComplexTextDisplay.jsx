@@ -5,7 +5,7 @@ import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import 'katex/dist/katex.min.css';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { dark } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { okaidia } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 const ComplexTextDisplay = ({ text }) => {
   const components = {
@@ -14,12 +14,12 @@ const ComplexTextDisplay = ({ text }) => {
       if (!inline && match) {
         return (
           <SyntaxHighlighter
-            style={dark}
+            style={okaidia}
             language={match[1]}
-            PreTag="div"
             customStyle={{
-              whiteSpace: 'pre-wrap',
-              wordBreak: 'break-word',
+              backgroundColor: '#1c1917',
+              border: '1px solid #555',
+              borderRadius: '0.25rem'
             }}
             {...props}
           >

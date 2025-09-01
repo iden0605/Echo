@@ -16,11 +16,8 @@ const BlanksQuiz = ({ content, desc, scrollContainerRef }) => {
     if (!content) return [];
     return Object.entries(content).map(([rawQuestion, answer]) => {
       const description = desc && desc[rawQuestion] ? desc[rawQuestion] : "No explanation available.";
-      const question = rawQuestion
-        .replace(/^\d+\.\s*/, '')
-        .replace(/(?:\s*_____)+\s*/g, ' _____ ')
-        .trim();
-      return { question, answer, description };
+      const processedQuestion = rawQuestion.replace(/_____/g, '\\_\\_\\_\\_\\_');
+      return { question: processedQuestion, answer, description };
     });
   }, [content, desc]);
 
@@ -95,12 +92,7 @@ const BlanksQuiz = ({ content, desc, scrollContainerRef }) => {
             <div className="w-full flex-grow flex flex-col justify-center">
               <div className="w-full flex flex-col items-center">
                 <div className="text-xl sm:text-2xl mb-4 text-center font-semibold text-white">
-                  {q.question.split('_____').map((part, i, array) => (
-                    <React.Fragment key={i}>
-                      <ComplexTextDisplay text={part} />
-                      {i < array.length - 1 && <span className="font-bold text-3xl sm:text-4xl text-stone-400 mx-2">_____</span>}
-                    </React.Fragment>
-                  ))}
+                  <ComplexTextDisplay text={q.question} />
                 </div>
                 <form className="w-full flex flex-col items-center">
                   <input type="text" className="w-full max-w-md p-3 bg-stone-700 border-2 rounded-lg text-center text-base sm:text-lg text-white" />
@@ -136,7 +128,8 @@ const BlanksQuiz = ({ content, desc, scrollContainerRef }) => {
       <div style={{ minHeight: maxHeight > 0 ? `${maxHeight}px` : undefined }} className="w-full flex-grow flex flex-col">
         <div className="w-full flex-grow flex flex-col justify-between gap-4">
           <div>
-            <div className="text-lg sm:text-xl mb-4 text-center font-semibold text-white" dangerouslySetInnerHTML={{ __html: question.replace(/_____/g, '<span class="font-bold text-3xl sm:text-4xl text-stone-400 mx-2">_____</span>') }}>
+            <div className="text-lg sm:text-xl mb-4 text-center font-semibold text-white">
+              <ComplexTextDisplay text={question} />
             </div>
           </div>
           <form onSubmit={handleSubmit} className="w-full flex flex-col items-center">

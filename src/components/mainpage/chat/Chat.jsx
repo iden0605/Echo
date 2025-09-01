@@ -13,21 +13,24 @@ function Chat({ isDragging, setIsDragging, isSplitVisible, setIsSplitVisible, se
   const scrollTimeoutRef = useRef(null);
   const messagesEndRef = useRef(null);
   const abortControllerRef = useRef(null);
-  const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
-  const initialHeight = useRef(window.innerHeight);
+  const chatContainerDivRef = useRef(null);
 
   useEffect(() => {
+    const visualViewport = window.visualViewport;
+    if (!visualViewport) return;
+
     const handleResize = () => {
-      const currentHeight = window.innerHeight;
-      if (currentHeight < initialHeight.current * 0.85) {
-        setIsKeyboardVisible(true);
-      } else {
-        setIsKeyboardVisible(false);
+      if (chatContainerDivRef.current) {
+        const offsetTop = chatContainerDivRef.current.getBoundingClientRect().top;
+        chatContainerDivRef.current.style.height = `${visualViewport.height - offsetTop}px`;
+        scrollToBottom();
       }
     };
 
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    visualViewport.addEventListener('resize', handleResize);
+    handleResize();
+
+    return () => visualViewport.removeEventListener('resize', handleResize);
   }, []);
 
   useEffect(() => {
@@ -257,7 +260,7 @@ function Chat({ isDragging, setIsDragging, isSplitVisible, setIsSplitVisible, se
   };
 
   return (
-    <div className={`relative flex flex-col flex-grow overflow-hidden h-full ${isKeyboardVisible ? 'keyboard-visible' : ''}`}>
+    <div ref={chatContainerDivRef} className="relative flex flex-col flex-grow overflow-hidden">
       <style>{`
         .chat-content::-webkit-scrollbar {
           display: none;

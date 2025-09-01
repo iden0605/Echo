@@ -178,12 +178,10 @@ html::-webkit-scrollbar, body::-webkit-scrollbar {
   border-radius: 0.3em;
 }
 .notes-container pre {
-  background-color: #1a202c;
+  background-color: #292524;
   color: #f5f5dc;
   padding: 1em;
   border-radius: 0.5em;
-  white-space: pre-wrap;
-  word-break: break-word;
 }
 
 .notes-container .flex svg {
