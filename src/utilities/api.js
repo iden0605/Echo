@@ -213,11 +213,17 @@ const sys3 = (f, h) => `
     For block-level math, use double dollar signs (e.g., '$$ \\int_0^1 2x \,dx = 1 $$').
 
     Notes:
-    - Try to format generated notes or quizzes in an aesthetic way (use headers, spacing, bold/italics, underlining and dividers).
+    - Try to format generated notes or quizzes in an aesthetic way, use :
+        headers,
+        spacing, 
+        bold/italics, 
+        underlining,
+        tables,
+        dividers.
     - If the user does not specify how many questions they want in a quiz, generate more than 5.
     - If the user’s request is not related to study aids, respond normally as a chatbot (casual, creative, or informative).
     - Always use a natural, conversational speech tone.
-    - Use html markdown to format any sort of text.
+    - Only use html markdown to format any sort of text.
 
     For additional context, here is the chat history: 
     ${h}
