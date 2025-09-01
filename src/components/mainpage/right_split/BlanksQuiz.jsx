@@ -14,8 +14,12 @@ const BlanksQuiz = ({ content, desc, scrollContainerRef }) => {
 
   const questions = useMemo(() => {
     if (!content) return [];
-    return Object.entries(content).map(([question, answer]) => {
-      const description = desc && desc[question] ? desc[question] : "No explanation available.";
+    return Object.entries(content).map(([rawQuestion, answer]) => {
+      const description = desc && desc[rawQuestion] ? desc[rawQuestion] : "No explanation available.";
+      const question = rawQuestion
+        .replace(/^\d+\.\s*/, '')
+        .replace(/(?:\s*_____)+\s*/g, ' _____ ')
+        .trim();
       return { question, answer, description };
     });
   }, [content, desc]);

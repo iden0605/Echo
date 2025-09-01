@@ -13,6 +13,22 @@ function Chat({ isDragging, setIsDragging, isSplitVisible, setIsSplitVisible, se
   const scrollTimeoutRef = useRef(null);
   const messagesEndRef = useRef(null);
   const abortControllerRef = useRef(null);
+  const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
+  const initialHeight = useRef(window.innerHeight);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const currentHeight = window.innerHeight;
+      if (currentHeight < initialHeight.current * 0.85) {
+        setIsKeyboardVisible(true);
+      } else {
+        setIsKeyboardVisible(false);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     const initialMessages = [
@@ -241,7 +257,7 @@ function Chat({ isDragging, setIsDragging, isSplitVisible, setIsSplitVisible, se
   };
 
   return (
-    <div className="relative flex flex-col flex-grow overflow-hidden h-full">
+    <div className={`relative flex flex-col flex-grow overflow-hidden h-full ${isKeyboardVisible ? 'keyboard-visible' : ''}`}>
       <style>{`
         .chat-content::-webkit-scrollbar {
           display: none;

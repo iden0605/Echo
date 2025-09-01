@@ -179,6 +179,10 @@ const sys2 = (h) => `
     and will be receiving your response via TTS,
     so please give a response in a speech tone rather than a text tone.
 
+    When responding with mathematical content, including equations, formulas, summations, integrals, and differentiation, always enclose it in LaTeX notation. 
+    For inline math, use single dollar signs (e.g., '$f(x) = x^2$'). 
+    For block-level math, use double dollar signs (e.g., '$$ \int_0^1 2x \,dx = 1 $$').
+
     Feel free to perform function calling on any of the defined functions when the user prompts to create any of these: 
     - flash cards
     - multiple choice quiz

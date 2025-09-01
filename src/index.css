@@ -29,6 +29,14 @@ body.fixed {
   width: 100%;
 }
 
+.keyboard-visible {
+  height: var(--vh, 1vh) * 100 !important;
+}
+
+.keyboard-visible .chat-content {
+  padding-bottom: 120px;
+}
+
 
 html::-webkit-scrollbar, body::-webkit-scrollbar {
   display: none;
