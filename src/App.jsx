@@ -32,15 +32,23 @@ function App() {
   const [splitSizes, setSplitSizes] = useState([50, 50]);
 
   useEffect(() => {
+    const setVh = () => {
+      const vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty('--vh', `${vh}px`);
+    };
+
     const handleResize = () => {
+      setVh();
       setIsMobile(window.innerWidth < 768);
       const screenWidth = window.innerWidth;
       const leftMin = (screenWidth * 300) / 1920;
       const rightMin = (screenWidth * 800) / 1920;
       setMinSizes([leftMin, rightMin]);
     };
+
     window.addEventListener('resize', handleResize);
-    handleResize();
+    setVh(); // Initial set
+
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 

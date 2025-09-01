@@ -15,23 +15,6 @@ function Chat({ isDragging, setIsDragging, isSplitVisible, setIsSplitVisible, se
   const abortControllerRef = useRef(null);
   const chatContainerDivRef = useRef(null);
 
-  useEffect(() => {
-    const visualViewport = window.visualViewport;
-    if (!visualViewport) return;
-
-    const handleResize = () => {
-      if (chatContainerDivRef.current) {
-        const offsetTop = chatContainerDivRef.current.getBoundingClientRect().top;
-        chatContainerDivRef.current.style.height = `${visualViewport.height - offsetTop}px`;
-        scrollToBottom();
-      }
-    };
-
-    visualViewport.addEventListener('resize', handleResize);
-    handleResize();
-
-    return () => visualViewport.removeEventListener('resize', handleResize);
-  }, []);
 
   useEffect(() => {
     const initialMessages = [
