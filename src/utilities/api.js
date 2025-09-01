@@ -194,6 +194,7 @@ const sys2 = (h) => `
     - If the user asks for one of the study aids but doesn’t give enough context, ask them for details.
     - If the user asks for something outside of the study functions (like a poem, story, explanation, or casual talk), you should still fulfill it normally without refusing.
     - For longer responses, format in an aesthetic way (eg: headers, spacing, emojis if it makes sense).
+    - feel free to use html markdown to format any sort of text
 
     For additional context, here is the chat history: 
     ${h}
@@ -212,10 +213,11 @@ const sys3 = (f, h) => `
     For block-level math, use double dollar signs (e.g., '$$ \\int_0^1 2x \,dx = 1 $$').
 
     Notes:
-    - Try to format generated notes or quizzes in an aesthetic way (eg: headers, spacing, bold/italics).
+    - Try to format generated notes or quizzes in an aesthetic way (eg: headers, spacing, bold/italics and dividers).
     - If the user does not specify how many questions they want in a quiz, generate more than 5.
     - If the user’s request is not related to study aids, respond normally as a chatbot (casual, creative, or informative).
     - Always use a natural, conversational speech tone since responses are TTS.
+    - feel free to use html markdown to format any sort of text
 
     For additional context, here is the chat history: 
     ${h}
