@@ -262,7 +262,7 @@ function InputBox({ onSendMessage, aiLoading, isDragging, setIsDragging, onStop 
       <textarea
         ref={textareaRef}
         placeholder={aiLoading ? "Echo is thinking..." : "Ask Echo"}
-        className="w-full flex-grow bg-transparent select-none outline-none text-base leading-normal text-cream-50 pr-3 pl-4 py-2 overflow-y-auto resize-none custom-scrollbar"
+        className="w-full flex-grow bg-transparent outline-none text-base leading-normal text-cream-50 pr-3 pl-4 py-2 overflow-y-auto resize-none custom-scrollbar"
         value={currInput}
         onChange={(e) => {
           if (isRecording) {
