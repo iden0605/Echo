@@ -36,8 +36,8 @@ const ComplexTextDisplay = ({ text }) => {
     <div className="whitespace-normal break-words notes-container">
       <ReactMarkdown
         components={components}
-        remarkPlugins={[remarkMath]}
-        rehypePlugins={[rehypeKatex]}
+        remarkPlugins={[remarkGfm, remarkMath]}
+        rehypePlugins={[rehypeRaw, rehypeKatex]}
       >
         {text}
       </ReactMarkdown>
