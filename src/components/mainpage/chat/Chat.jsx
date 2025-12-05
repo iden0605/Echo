@@ -31,8 +31,19 @@ function Chat({ isDragging, setIsDragging, isSplitVisible, setIsSplitVisible, se
   const [thumbHeight, setThumbHeight] = useState(0);
   const [thumbTop, setThumbTop] = useState(0);
 
+  let justAdjustedViewport = false;
+
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener("resize", () => {
+      justAdjustedViewport = true;
+      setTimeout(() => (justAdjustedViewport = false), 100);
+    });
+  }
+
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    messagesEndRef.current?.scrollIntoView({
+      behavior: justAdjustedViewport ? "auto" : "smooth",
+    });
   };
 
   useEffect(() => {
@@ -47,6 +58,28 @@ function Chat({ isDragging, setIsDragging, isSplitVisible, setIsSplitVisible, se
       setChatboxHeight(chatboxContainerRef.current.offsetHeight);
     }
   }, [messages.length]);
+
+  useEffect(() => {
+    if (window.visualViewport) {
+      const viewport = window.visualViewport;
+      const chatInput = chatboxContainerRef.current;
+
+      const updatePosition = () => {
+        if (!chatInput) return;
+        const offset = viewport.height - window.innerHeight;
+        chatInput.style.transform = `translateY(-${offset}px)`;
+      };
+
+      viewport.addEventListener('resize', updatePosition);
+      viewport.addEventListener('scroll', updatePosition);
+
+      return () => {
+        viewport.removeEventListener('resize', updatePosition);
+        viewport.removeEventListener('scroll', updatePosition);
+        if (chatInput) chatInput.style.transform = '';
+      };
+    }
+  }, []);
 
   useEffect(() => {
     const chatContentElement = chatContentRef.current;
@@ -119,6 +152,11 @@ function Chat({ isDragging, setIsDragging, isSplitVisible, setIsSplitVisible, se
 
     setMessages((prevMessages) => [...prevMessages, userMessage, emptyAiMessage]);
     setAiLoading(true);
+
+        
+    setTimeout(() => {
+      scrollToBottom();
+    }, 100);
 
     try {
       const history = newMessages.map(msg => `${msg.sender}: ${msg.text}`).join('\n');
@@ -252,6 +290,7 @@ function Chat({ isDragging, setIsDragging, isSplitVisible, setIsSplitVisible, se
       <div
         ref={chatContentRef}
         className="chat-content flex flex-col flex-grow overflow-y-auto p-4 z-10 items-center"
+        style={{ paddingBottom: chatboxHeight ? `${chatboxHeight + 20}px` : '120px' }}
       >
         <ChatInterface messages={messages} aiLoading={aiLoading} chatboxHeight={chatboxHeight} onEditMessage={handleEditMessage} isSplitVisible={isSplitVisible} setIsSplitVisible={setIsSplitVisible} />
         <div ref={messagesEndRef} />
@@ -275,7 +314,10 @@ function Chat({ isDragging, setIsDragging, isSplitVisible, setIsSplitVisible, se
         </div>
       )}
 
-      <div ref={chatboxContainerRef} className="flex justify-center px-4 pb-2 md:pb-4 z-20">
+      <div
+        ref={chatboxContainerRef}
+        className="chat-input-container fixed bottom-0 left-0 w-full flex justify-center px-4 pb-2 md:pb-4 z-50 transition-transform bg-stone-900/95 backdrop-blur-sm"
+      >
         <InputBox onSendMessage={handleUserMessage} aiLoading={aiLoading} isDragging={isDragging} setIsDragging={setIsDragging} onStop={handleStop} />
       </div>
     </div>
