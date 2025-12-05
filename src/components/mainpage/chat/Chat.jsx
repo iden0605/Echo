@@ -10,6 +10,7 @@ function Chat({ isDragging, setIsDragging, isSplitVisible, setIsSplitVisible, se
   const [aiLoading, setAiLoading] = useState(false);
   const [chatboxHeight, setChatboxHeight] = useState(0);
   const [isScrolling, setIsScrolling] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const scrollTimeoutRef = useRef(null);
   const messagesEndRef = useRef(null);
   const abortControllerRef = useRef(null);
@@ -60,7 +61,15 @@ function Chat({ isDragging, setIsDragging, isSplitVisible, setIsSplitVisible, se
   }, [messages.length]);
 
   useEffect(() => {
-    if (window.visualViewport) {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  useEffect(() => {
+    if (window.visualViewport && isMobile) {
       const viewport = window.visualViewport;
       const chatInput = chatboxContainerRef.current;
 
@@ -79,7 +88,7 @@ function Chat({ isDragging, setIsDragging, isSplitVisible, setIsSplitVisible, se
         if (chatInput) chatInput.style.transform = '';
       };
     }
-  }, []);
+  }, [isMobile]);
 
   useEffect(() => {
     const chatContentElement = chatContentRef.current;
@@ -290,7 +299,7 @@ function Chat({ isDragging, setIsDragging, isSplitVisible, setIsSplitVisible, se
       <div
         ref={chatContentRef}
         className="chat-content flex flex-col flex-grow overflow-y-auto p-4 z-10 items-center"
-        style={{ paddingBottom: chatboxHeight ? `${chatboxHeight + 20}px` : '120px' }}
+        style={{ paddingBottom: isMobile ? (chatboxHeight ? `${chatboxHeight + 40}px` : '140px') : '20px' }}
       >
         <ChatInterface messages={messages} aiLoading={aiLoading} chatboxHeight={chatboxHeight} onEditMessage={handleEditMessage} isSplitVisible={isSplitVisible} setIsSplitVisible={setIsSplitVisible} />
         <div ref={messagesEndRef} />
@@ -316,7 +325,11 @@ function Chat({ isDragging, setIsDragging, isSplitVisible, setIsSplitVisible, se
 
       <div
         ref={chatboxContainerRef}
-        className="chat-input-container fixed bottom-0 left-0 w-full flex justify-center px-4 pb-2 md:pb-4 z-50 transition-transform bg-stone-900/95 backdrop-blur-sm"
+        className={`chat-input-container flex justify-center px-4 pb-2 md:pb-4 z-50 transition-transform ${
+          isMobile
+            ? 'fixed bottom-0 left-0 w-full bg-stone-900/95 backdrop-blur-sm'
+            : 'relative bg-transparent z-20'
+        }`}
       >
         <InputBox onSendMessage={handleUserMessage} aiLoading={aiLoading} isDragging={isDragging} setIsDragging={setIsDragging} onStop={handleStop} />
       </div>
